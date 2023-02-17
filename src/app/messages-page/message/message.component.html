@@ -1,0 +1,79 @@
+<!--                                         -->
+<!-- LOGGED-IN USER *IS* THE MESSAGE SENDER. -->
+<!--                                         -->
+
+<div *ngIf="message.IsSender" class="message-container">
+  <!--"Pre-wrap" allows us to render new lines properly-->
+  <!--"overflow-wrap" prevents long words from overflowing messages container (such as URLs)-->
+  <!-- The messages are received from the backend encrypted. If we have the unencrypted
+       text stored we use that instead. -->
+  <!-- Consider whether or not to show the timestamp. -->
+  <!--nextMessage ? message.IsSender != nextMessage.IsSender : true-->
+  <div class="message__avatar mr-15px mt-5px" [avatar]="globalVars.loggedInUser.PublicKeyBase58Check"></div>
+
+  <div class="message-time-column">
+    <div *ngIf="message.IsSender" class="d-flex align-items-end">
+      <!--<div class="message__avatar-placeholder"></div>-->
+      <p class="message-username">@{{ globalVars.loggedInUser.ProfileEntryResponse.Username }}</p>
+      <div class="fs-12px fc-muted">
+        <span *ngIf="message.TstampNanos">{{ globalVars.convertTstampToDateOrTime(message.TstampNanos) }}</span>
+        <span *ngIf="!message.TstampNanos">Sending...</span>
+      </div>
+    </div>
+
+    <div
+      *ngIf="!message.TstampNanos"
+      class="d-flex align-items-center messages-thread__border-radius fs-15px message__min-height message__sender-bubble-color"
+      style="white-space: pre-wrap; overflow-wrap: anywhere"
+    ></div>
+    <div
+      *ngIf="message.V2 && message.TstampNanos"
+      class="d-flex align-items-center messages-thread__border-radius fs-15px message__min-height message__sender-bubble-color"
+      style="white-space: pre-wrap; overflow-wrap: anywhere"
+    >
+      {{ message.DecryptedText }}
+    </div>
+    <div
+      *ngIf="!message.V2 && message.TstampNanos"
+      class="d-flex align-items-center messages-thread__border-radius fs-15px message__min-height message__sender-bubble-color"
+      style="white-space: pre-wrap; overflow-wrap: anywhere"
+    >
+      {{
+        globalVars.messageMeta.decryptedMessgesMap[
+          globalVars.loggedInUser.PublicKeyBase58Check + "" + message.TstampNanos
+        ]
+          ? globalVars.messageMeta.decryptedMessgesMap[
+              globalVars.loggedInUser.PublicKeyBase58Check + "" + message.TstampNanos
+            ].DecryptedText
+          : "&#60;Message is not decryptable on this device&#62;"
+      }}
+    </div>
+  </div>
+</div>
+
+<!--                                             -->
+<!-- LOGGED-IN USER *IS NOT* THE MESSAGE SENDER. -->
+<!--              -->
+<div *ngIf="!message.IsSender" class="message-container">
+  <div class="message__avatar mr-15px mt-5px" [avatar]="message.SenderPublicKeyBase58Check"></div>
+  <!--"Pre-wrap" allows us to render new lines properly-->
+  <!-- Messages that the user receives can be returned from the backend unencrypted. -->
+  <div class="message-time-column">
+    <div *ngIf="!message.IsSender" class="message-name-stamp">
+      <!--<div class="message__avatar-placeholder"></div>-->
+      <!--nextMessage ? message.IsSender != nextMessage.IsSender : true-->
+      <p class="message-username">@{{ counterpartyName }}</p>
+      <div class="fs-12px fc-muted">
+        {{ globalVars.convertTstampToDateOrTime(message.TstampNanos) }}
+      </div>
+    </div>
+    <div
+      class="d-flex align-items-center py-5px messages-thread__border-radius fs-15px message__min-height background-color-message-selected disable-scrollbars"
+      style="overflow-wrap: anywhere"
+    >
+      {{ message.DecryptedText }}
+    </div>
+  </div>
+</div>
+
+<div class="mt-10px"></div>

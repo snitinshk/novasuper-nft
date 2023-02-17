@@ -1,0 +1,25 @@
+.bold-text {
+    font-weight: bold !important;
+}
+.unread-message-balloon::after {
+    position: absolute;
+    right: 20px;
+    top: 35px;  
+    content: "";
+    width: 10px;
+    height: 10px;
+    background-color: #F5685F;
+    border-radius: 30px;
+}
+.message-thread-grey {
+    background-color: rgb(245, 245, 245);
+}
+.unread-message-balloon {
+    .messages-thread__ellipsis-restriction {
+        color: var(--text);
+        font-weight: bold;
+    }
+    .messages-thread__ellipsis-restriction-username {
+        font-weight: bold;
+    }
+}

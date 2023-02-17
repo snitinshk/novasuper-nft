@@ -1,0 +1,87 @@
+<div class="page-create-post-upload-mint">
+  <div class="popup-header">
+    <h1>Mint your NFT</h1>
+  </div>
+  <div class="popup-body">
+    <div class="row nft-upload_img no-gutters">
+      <div class="col col-8">
+        <h6 class="font-weight-bold">Upload an image</h6>
+        <h6>Your image will be uploaded to Arweave decentralized storage. Max 200KB in size.</h6>
+      </div>
+      <div class="col col-4 align-self-center text-right">
+        <input
+          #imageUploadInput
+          class="d-none"
+          type="file"
+          accept="image/*"
+          (change)="_handleFilesInput($event.target.files)"
+        />
+        <button *ngIf="isUploading && !isUploaded" class="btn-modal">
+          Uploading
+          <i class="fa fa-spinner fa-spin"></i>
+        </button>
+        <a *ngIf="isUploaded && !isUploadConfirmed" class="btn btn-modal" target="_blank" href="{{ postImageSrc }}">
+          Checking
+          <i class="fa fa-spinner fa-spin"></i>
+        </a>
+        <img id="imagePreview" *ngIf="isUploaded && isUploadConfirmed" src="{{ this.postImageSrc }}" />
+        <button *ngIf="!(isUploading || isUploaded)" class="btn-modal" (click)="imageUploadInput.click()">
+          Upload image
+        </button>
+      </div>
+    </div>
+
+    <h6 class="font-weight-bold">Description</h6>
+    <h6>Write a {{ GlobalVarsService.MAX_POST_LENGTH }} character caption for your NFT.</h6>
+    <textarea
+      [(ngModel)]="postDescription"
+      rows="3"
+      matInput
+      placeholder="Enter the description of the NFT..."
+    ></textarea>
+
+    <div class="row">
+      <div class="col col-10">
+        <h6 class="font-weight-bold">Unlockable content</h6>
+        <h6>
+          When the auction closes, you will be able to include text (eg, high resolution file link) visible only to the
+          owner of the NFT.
+        </h6>
+      </div>
+      <div class="col col-2 align-self-center">
+        <mat-slide-toggle [(ngModel)]="postUnlockable"></mat-slide-toggle>
+      </div>
+    </div>
+
+    <h6 class="font-weight-bold">Minimum price</h6>
+    <h6>The lowest price you'd be willing to accept.</h6>
+    <div class="input-with-span">
+      <input [(ngModel)]="postMinPrice" matInput placeholder="Enter the NFT price..." />
+      <span>$DESO</span>
+    </div>
+
+    <h6 class="font-weight-bold">Royalties allocated everytime the NFT is sold</h6>
+    <div class="row nft_btn_wrow">
+      <div class="col col-6">
+        <h6>To your DESO wallet</h6>
+        <div class="input-with-span">
+          <input [(ngModel)]="postCreatorRoyalty" matInput placeholder="7" />
+          <span>%</span>
+        </div>
+      </div>
+      <div class="col col-6 ml-sm">
+        <h6>To your creator coin</h6>
+        <div class="input-with-span">
+          <input [(ngModel)]="postHoldersRoyalty" matInput placeholder="7" />
+          <span>%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="popup-footer">
+    <button [disabled]="isSubmitPress || !this.isPostReady()" class="btn btn-post" (click)="_createPost()">
+      Mint your NFT
+      <i *ngIf="isSubmitPress" class="fa fa-spinner fa-spin"></i>
+    </button>
+  </div>
+</div>

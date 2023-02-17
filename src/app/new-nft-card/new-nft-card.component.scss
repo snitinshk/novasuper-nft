@@ -1,0 +1,348 @@
+.single-card {
+    box-shadow: 0px 0px 3px 2px rgba(0, 0, 0, 0.1);
+    transition: .2s;
+    position: relative;
+    transition: transform 0.2s ease;
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        background: transparent;
+        .profile-img {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+            a {
+                width: 25px;
+                height: 25px;
+                display: block;
+                background-position: center;
+                background-size: cover;
+                border-radius: 50%;
+            }
+        }
+        h6 {
+            display: block;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+            max-width: 110px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .value-buy-cover {
+            display: inline-block;
+            padding: 1px 1px 1px 6px;
+            border-radius: 15px;
+            background: var(--secalt);
+            margin-left: 8px;
+            font-size: 10px;
+            a {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                .buy_bg {
+                    background-color: #FFFFFF;
+                    padding: 2px 8px;
+                    border-radius: 0 12px 12px 0;
+                    font-size: 11px;
+                    margin-left: 5px;
+                }
+            }
+        }
+    }
+    .card-body {
+        padding: 0px;
+        box-shadow: 0px 0px 3px 2px rgba(0, 0, 0, 0.1);
+        border-radius: 30px;
+        z-index: 1;
+        .img-cover {
+            width: 100%;
+            max-width: 100%;    
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--secondary);
+            border-top-left-radius: 30px !important;
+            border-top-right-radius: 30px !important;
+            overflow: hidden;
+            img {
+                display: block;
+                object-fit: cover;
+                width: 100%;
+                height: 100%;
+            }
+            .video-iframe {
+                height: auto;
+                width: auto;
+                min-width: 100%;
+                min-height: 100%;
+            }
+            &.change-height-img-cover {
+                @media screen and (max-width: 400px) {
+                    height: auto !important;
+                    img {
+                        width: 100%;
+                        height: auto;
+                        min-width: none !important;
+                        min-height: none !important; 
+                    }
+                }
+            }
+        }
+        .caption-cover {
+            padding: 0px 12px;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            height: 80px;
+            padding-left: 25px;
+            padding-right: 25px;
+            background-color: #FFFFFF;
+            z-index: 1;
+            &.auto-h {
+                height: auto;
+            }
+            p {
+                height: 50%;
+                font-size: 13px;
+                text-overflow: ellipsis;
+                overflow: hidden; 
+                white-space: nowrap;
+                vertical-align: middle;
+            }
+        }
+        .bid-cover {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            padding-left: 25px;
+            padding-right: 25px;
+            border-radius: 0px 0px 30px 30px;
+            justify-content: center;
+            z-index: 1;
+            .bid-row {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                .bid_inner_row {
+                    width: 100%;
+                    .bid-col {
+                        flex: none;
+                        padding-right: 10px;
+                    }
+                }
+                p {
+                    font-size: 11px;
+                    margin: 0 0 5px 0;
+                    //color: #ffff;
+                }
+                .bid-col {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    flex: 1 1 auto;
+                    p {
+                        //color: var(--background);
+                        font-size: 16px;
+                        &:first-child {
+                            margin-bottom: 5px;
+                            margin-right: 5px;
+                        }
+                    }
+                    .p-lighter {
+                        font-size: 13px;
+                    }
+                }
+            }
+            .btn-place-a-bid {
+                background: #FFFFFF;
+                color: var(--button);
+                font-size: 12px;
+                font-weight: bold;
+            }
+        }
+    }
+    .card-footer-2 {
+        background: transparent;
+        border: none;
+        padding: 5px 12px 8px;
+        position: relative;
+        .row-1 {
+            padding: 10px 0px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            //border-top: 1px solid var(--border);
+            //border-bottom: 1px solid var(--border);
+            h6 {
+                font-size: 12px;
+                span {
+                    font-weight: bold;
+                }
+            }
+        }
+        .row-2 {
+            padding-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            .icon-cover {
+                display: flex;
+                align-items: center;
+                span {
+                    font-size: 11px;
+                }
+            }
+        }
+    }
+}
+.br-mr {
+    border-radius: 12px;
+}
+.br-30px {
+    border-radius: 30px;
+}
+.overflow-ellipsis-price {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.ml-5px {
+    margin-left: 5px;
+}
+.max-width-300 {
+    max-width: 300px;
+}
+.bg {
+    background-color: red !important;
+}
+.colors-not-sold {
+    background-color: #171717;
+    .p-lighter {
+        color: #BFBFBF !important;
+    }
+    p {
+        color: #FFFFFF !important;
+    }
+}
+.br-0px {
+    border-radius: 0px !important;
+}
+.card-footer {
+    //transition-delay: 0.3s;
+    position: absolute;
+    bottom: 0;
+    transition-duration: 0.2s;
+    padding: 5px 12px 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 60px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    width: 100%;
+    background-color: #FFFFFF;
+    border: none;
+    //box-shadow: 0px 0px 3px 2px rgba(0, 0, 0, 0.1);
+    border: 1.5px solid #DDDDDD;
+    z-index: -1;
+}
+.footer-icons-container {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    bottom: 0;
+}
+.hover-icons {
+    &:hover {
+        transform: translateY(-2px);
+        z-index: 10;
+        .card-footer {
+            transition-duration: 0.2s;
+            transform: translateY(60%);
+            z-index: -1;
+        }
+        .footer-icons-container {
+            transition: all 0.2s;
+            pointer-events: all;
+            animation: illusionOfUnderElement 0.2s forwards;
+            z-index: 10;
+            left: 10%;
+            //bottom: -32.5px;
+        }
+    }
+}
+@keyframes illusionOfUnderElement {
+    0% {
+        opacity: 0;
+        bottom: 0;
+    }
+    50% {
+        opacity: 0;
+        bottom: -20px;
+    }
+    100% {
+        opacity: 1;
+        bottom: -32.5px;
+    }
+}
+.mobile-icons-visible {
+    transform: translateY(-2px);
+    &:hover {
+        z-index: 10;
+    }
+    .card-footer {
+        transition-duration: 0.2s;
+        transform: translateY(60%);
+        border: 1.5px solid #DDDDDD;
+        z-index: -1;
+    }
+    .footer-icons-container {
+        transition: all 0.2s;
+        pointer-events: all;
+        z-index: 10;
+        opacity: 1;
+        left: 10%;
+        bottom: -32.5px;
+    }
+}
+.ml-50px {
+    margin-left: 50px;
+}
+.colors-sold {
+    border-top: 1px solid #e4e4e4;
+    background: #FFFFFF;
+    .p-lighter {
+        color: #6A6A6A !important;
+    }
+    p {
+        color: var(--button) !important;
+    }
+}
+.creator-text-nft-card {
+    font-size: 9px !important;
+    color: var(--textalt);
+}
+.username-nft-card {
+    font-size: 13px !important;
+    color: #525252;
+}
+.fs-20px-im {
+    font-size: 20px !important;
+}
+.accept-transfer {
+    color: #FFFFFF;
+    border: 4px solid #FFFFFF;
+    font-size: 13px;
+    font-weight: bold;
+    background: #000000;
+    width: 60%;
+    border-radius: 10px;
+    &:hover {
+        transform: scale(1.025);
+        transition-duration: 0.3s;
+    }
+}

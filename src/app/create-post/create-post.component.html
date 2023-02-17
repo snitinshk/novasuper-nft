@@ -1,0 +1,32 @@
+<div class="page-create-post">
+  <div class="popup-header">
+    <h1>Create your post</h1>
+  </div>
+  <div class="popup-body">
+    <h6 class="font-weight-bold">Your post</h6>
+    <div class="textarea-cover">
+      <textarea [(ngModel)]="postInput" matInput placeholder="Enter post content here..."></textarea>
+      <!-- <div class="add-image-icon" title="Add Media">
+                <img src="assets/icons/add-image-icon.svg" alt="">
+                <input type="file">
+            </div> -->
+    </div>
+    <h6 class="font-weight-bold">Add a link to Arweave for your picture</h6>
+    <h6>You can only mint NFT’s with files stored on ArDrive. Learn more about how to use ArDrive here.</h6>
+    <input matInput placeholder="Insert ArDrive link here" [(ngModel)]="postImageSrc" />
+  </div>
+  <div class="popup-footer">
+    <button
+      [disabled]="isSubmitPress || (postImageSrc === null && postImageSrc === '') || postInput === ''"
+      class="btn btn-post"
+      (click)="_createPost()"
+    >
+      Post
+      <i *ngIf="isSubmitPress" class="fa fa-spinner fa-spin"></i>
+    </button>
+    <h6>
+      💡 To mint this post as an NFT, click the three dots in the top right corner of your live post, and select “Mint
+      NFT” 💡
+    </h6>
+  </div>
+</div>

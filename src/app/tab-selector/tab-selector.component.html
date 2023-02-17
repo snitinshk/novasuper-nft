@@ -1,0 +1,19 @@
+<div class="d-flex w-100 border-bottom border-color-grey space-between" style="cursor: pointer; height: 50px">
+  <div
+    *ngFor="let tab of tabs"
+    (click)="_tabClicked(tab)"
+    class="d-flex tabs_column_list flex-column align-items-center h-100"
+  >
+    <div
+      class="d-flex h-100 tabs_column_list_inner align-items-center fs-15px pr-15px pl-15px"
+      [ngClass]="{ 'fc-default': tab == this.activeTab, 'fc-muted': tab != this.activeTab }"
+    >
+      {{ tab }}
+      <div *ngIf="_isGlobal(tab)" class="bitclout-com">BITCLOUT.COM</div>
+    </div>
+    <div
+      class="w-100"
+      [ngClass]="{ 'tab-underline-active': tab == this.activeTab, 'tab-underline-inactive': tab != this.activeTab }"
+    ></div>
+  </div>
+</div>

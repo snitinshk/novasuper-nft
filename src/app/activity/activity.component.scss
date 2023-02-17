@@ -1,0 +1,188 @@
+.image-size-active-bids {
+    height: 100px !important;
+    width: 100px !important;
+    overflow: hidden;
+}
+.activity-frame-container {
+    height: 100%;
+    width: 100%;
+    //min-height: 100px !important;
+    min-width: 86.5px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    grid-area: a;
+}
+.mw-activity {
+    max-width: 915px;
+}
+.owned-nft {
+    background-color: var(--secondary);
+    height: 100px;
+    width: 100%;
+    border: 1px solid black;
+    margin-top: 10px;
+}
+.active-bids-bid-info {
+    grid-area: b;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+.active-bids-bid-status {
+    grid-area: c;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.active-bids-right-container {
+    width: calc(100% - 100px);
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.active-bids-buttons {
+    grid-area: d;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+.status-outbid {
+    min-height: 40px;
+    background-color: #FFE2E2;
+    font-weight: bold;
+    color: #FF636C;
+    font-size: bold;
+    width: 250px;
+    max-width: 100%;
+    height: 35px;
+    border-radius: 11.20879077911377px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.status-lead {
+    min-height: 40px;
+    background-color: #D7FFD3;
+    font-weight: bold;
+    color: #089E29;
+    font-size: bold;
+    width: 250px;
+    max-width: 100%;
+    height: 35px;
+    border-radius: 11.20879077911377px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.status-outbid-text {
+    font-size: 14px;
+    text-align: center;
+    padding-top: 10px;
+    font-weight: 400;
+    color: #757575;
+}
+.status-lead-text {
+    font-size: 14px;
+    text-align: center;
+    padding-top: 10px;
+    font-weight: 400;
+    color: #757575;
+}
+.activity-box {
+    border: 1px solid #e7e7e7;
+    border-radius: 5px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.07);
+    min-height: 150px;
+    //width: 150px;
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-areas:
+        "a b c c c d d";
+    align-items: center;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+@media (min-width: 551px) and (max-width: 1300px) {
+    .activity-box {
+        min-height: 300px;
+        grid-template-areas:
+            "a a a a b b b"
+            "a a a a b b b"
+            "c c c c d d d"
+            "c c c c d d d";
+    }
+    .active-bids-buttons {
+        justify-content: flex-start;
+        align-items: center;
+    }
+    .active-bids-bid-status {
+        justify-content: flex-start;
+        align-items: center;
+    }
+    .image-size-active-bids {
+        height: 140px !important;
+        width: 140px !important;
+    }
+    .active-bids-bid-info {
+        justify-content: center;
+        align-items: center;
+    }
+}
+@media (max-width: 550px) {
+    .activity-box {
+        min-height: 300px;
+        grid-template-areas:
+            "a a a a b b b"
+            "c c c c c c c"
+            "d d d d d d d";
+    }
+    .active-bids-button-pab {
+        margin-top: 10px;
+    }
+    .active-bids-bid-status {
+        margin-top: 10px;
+    }
+    .active-bids-bid-info {
+        justify-content: center;
+        align-items: center;
+    }
+}
+.active-bids-button-pab {
+    width: 200px !important;
+    width: 100%;
+    background: #000000;
+    color: var(--background);
+    border: 3px solid #000000;
+    border-radius: 5.55222225189209px;
+    box-shadow: 2.22088885307312px 2.22088885307312px 5.55222225189209px rgba(0, 0, 0, 0.25);
+}
+.active-bids-button-cb {
+    width: 200px !important;
+    width: 100%;
+    height: 20%;
+    font-size: 13px;
+    background: transparent;
+    border-radius: 5.55222225189209px;
+    border: none;
+}
+.active-bids-button-vnft {
+    width: 200px !important;
+    width: 100%;
+    text-align: center;
+    background: transparent;
+    border: 3px solid #000000;
+    border-radius: 5.55222225189209px;
+}

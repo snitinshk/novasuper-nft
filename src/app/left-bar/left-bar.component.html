@@ -1,0 +1,137 @@
+<div class="global__nav__width">
+  <div class="global__nav__fixed">
+    <!-- Logged-in Left Bar -->
+    <div *ngIf="globalVars.loggedInUser != null" class="global__nav__inner">
+      <div class="pt-10px"></div>
+
+      <div class="position-relative">
+        <change-account-selector></change-account-selector>
+      </div>
+
+      <div class="right_bx">
+        <right-bar-creators class="global__sidebar__fixed"></right-bar-creators>
+      </div>
+      <!-- Left Bar Buttons -->
+
+      <div class="pt-15px"></div>
+
+      <left-bar-button
+        [forMobile]="true"
+        [link]="AppRoutingModule.profilePath(globalVars?.loggedInUser?.ProfileEntryResponse?.Username)"
+        [buttonLabel]="'Profile'"
+        [imgSrc]="'assets/icons/user_cicrle.svg'"
+      ></left-bar-button>
+
+      <left-bar-button
+        [forDesktop]="true"
+        [imgSrc]="'assets/icons/feed-icon.svg'"
+        [link]="'/' + this.globalVars.RouteNames.BROWSE"
+        [buttonLabel]="'Feed'"
+      ></left-bar-button>
+
+      <left-bar-button
+        [forDesktop]="true"
+        [link]="'/' + globalVars.RouteNames.TRENDS"
+        [buttonLabel]="'Marketplace'"
+        [imgSrc]="'assets/icons/marketplace-icon.svg'"
+      ></left-bar-button>
+
+      <left-bar-button
+        [link]="'/' + globalVars.RouteNames.ACTIVITY"
+        [buttonLabel]="'Activity'"
+        [imgSrc]="'assets/icons/activity_small_icon.svg'"
+        *ngIf="globalVars.loggedInUser?.ProfileEntryResponse"
+      ></left-bar-button>
+
+      <left-bar-button
+        [link]="'/' + globalVars.RouteNames.INBOX_PREFIX"
+        [hasNotifications]="true"
+        [buttonLabel]="'Messages'"
+        [imgSrc]="'assets/icons/messages-icon.svg'"
+        *ngIf="globalVars.loggedInUser?.ProfileEntryResponse"
+      ></left-bar-button>
+
+      <left-bar-button
+        [link]="'/' + globalVars.RouteNames.WALLET"
+        [buttonLabel]="'Wallet'"
+        [imgSrc]="'assets/icons/wallet-icon.svg'"
+      ></left-bar-button>
+
+      <left-bar-button
+        *ngIf="globalVars.loggedInUser && !globalVars.loggedInUser.ProfileEntryResponse?.Username"
+        [link]="'/' + this.globalVars.RouteNames.UPDATE_PROFILE"
+        [buttonLabel]="'Create profile'"
+        [imgSrc]="'assets/icons/profile-icon.svg'"
+      ></left-bar-button>
+
+      <!-- <div class="p-15px" *ngIf="globalVars.loggedInUser?.ProfileEntryResponse"></div> -->
+      <div class="p-15px"></div>
+
+      <div class="w-100 d-flex left-bar-button">
+        <!-- <a class="left-bar__dot-inactive" [href]="getHelpMailToAttr()" target="_blank">·</a> -->
+        <a class="cursor-pointer fs-15px text-grey5" href="https://intercom.help/supernovas/en" target="_blank">
+          <div class="icon-cover">
+            <img src="assets/icons/support-icon.svg" />
+          </div>
+          Support
+        </a>
+      </div>
+
+      <div class="p-15px"></div>
+
+      <a
+        *ngIf="!globalVars?.loggedInUser?.ProfileEntryResponse?.IsVerified"
+        href="https://form.typeform.com/to/sv1kaUT2"
+        target="_blank"
+        class="become_creator"
+      >
+        Become a creator
+      </a>
+
+      <left-bar-button
+        *ngIf="globalVars.showAdminTools()"
+        [link]="'/' + globalVars.RouteNames.ADMIN"
+        [buttonLabel]="'Admin'"
+      ></left-bar-button>
+    </div>
+
+    <!-- Logged-out Left Bar -->
+    <div *ngIf="!globalVars.loggedInUser" class="global__nav__inner">
+      <div *ngIf="isMobile" class="d-flex w-100 align-items-center fs-24px font-weight-bold" style="height: 80px">
+        <div class="flex-grow-1 d-flex justify-content-end pl-30px">
+          <i class="fas fa-times fc-muted" (click)="closeMobile.emit()"></i>
+        </div>
+      </div>
+
+      <div class="pt-10px"></div>
+
+      <div *ngIf="isMobile" style="margin-left: 25px" class="mr-15px">
+        <change-account-selector></change-account-selector>
+      </div>
+
+      <div class="pt-15px"></div>
+
+      <!-- Left Bar Buttons -->
+      <left-bar-button
+        [link]="'/' + this.globalVars.RouteNames.BROWSE"
+        [imgSrc]="'assets/icons/feed-icon.svg'"
+        [buttonLabel]="'Feed'"
+      ></left-bar-button>
+      <left-bar-button
+        [forDesktop]="true"
+        [link]="'/' + globalVars.RouteNames.TRENDS"
+        [buttonLabel]="'Marketplace'"
+        [imgSrc]="'assets/icons/marketplace-icon.svg'"
+      ></left-bar-button>
+      <div class="w-100 d-flex left-bar-button">
+        <!-- <a class="left-bar__dot-inactive" [href]="getHelpMailToAttr()" target="_blank">·</a> -->
+        <a class="cursor-pointer fs-15px text-grey5" href="https://intercom.help/supernovas/en" target="_blank">
+          <div class="icon-cover">
+            <img src="assets/icons/support-icon.svg" />
+          </div>
+          Support
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

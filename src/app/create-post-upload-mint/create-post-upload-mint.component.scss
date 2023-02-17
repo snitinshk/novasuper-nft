@@ -1,0 +1,87 @@
+@import "../../assets/popup-ui.scss";
+
+.page-create-post-upload-mint {
+    width: 380px;
+    max-width: 100%;
+    margin: auto;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+
+    #imagePreview {
+        max-width: 100%;
+        max-height: 4rem;
+    }
+
+    h6 {
+        margin-bottom: 4px;
+    }
+    h6.font-weight-bold {
+        margin-top: 10px;
+        margin-bottom: 0px;
+    }
+
+    .btn-modal {
+        margin-top: 12px;
+        background-color: var( --button);
+        border: 3px solid var(--button);
+        font-weight: 600;
+        font-size: 14px !important;
+        color: var(--background);
+        border-radius: 5px;
+        padding: 8px;
+        box-sizing: border-box;
+        box-shadow: 0px 2px 2px rgb(0 0 0 / 12%);
+    }
+    
+    textarea {
+        margin-top: 6px !important;
+        margin-bottom: 10px !important;
+        font-size: 12px !important;
+        color: var( --topbar);
+        padding: 6px 12px;
+        line-height: 1.67;
+        &.font-weight-bold {
+            font-size: 14px !important;
+        }
+        @media screen and (max-width: 767px) {
+            font-size: 14px !important;
+        }
+    }
+
+    .input-with-span {
+        border: 1px solid var(--topbar);
+        border-radius: 5px;
+        max-width: 100%;
+        width: 100%;
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between;
+        margin-top: 7px;
+        margin-bottom: 20px;
+        .mat-input-element {
+            padding: 6px 12px;
+            line-height: 1.67;
+            font-size: 12px !important;
+            width: calc(90%);
+            border: none;
+            margin: 0px;
+        }
+        span {
+            background-color: var(--button);
+            color: var(--background);
+            width: 100px;
+            display: inline-block;
+            font-weight: 600;
+            text-align: center;
+            vertical-align: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            padding: .375rem .75rem;
+            
+            border-radius: .25rem;
+        }
+    }
+}

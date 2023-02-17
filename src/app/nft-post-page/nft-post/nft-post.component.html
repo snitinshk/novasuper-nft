@@ -1,0 +1,522 @@
+<!-- Top Bar -->
+<!-- FIXME: TODO: post threads: loading skeletons -->
+<div *ngIf="nftPost" class="d-flex flex-column">
+  <!-- New Page design -->
+  <simple-center-loader *ngIf="isLoading"></simple-center-loader>
+  <div class="nft_details_main_wrapper">
+    <div class="nft_bx nft_feed_post_design gray">
+      <div *ngIf="nftPost && nftBidData" class="w-100">
+        <!--  afterCommentCreatedCallback explanation: Here, the "post" is a top-level post. A new comment on a -->
+        <!--  top-level post should be prepended to the post's list of comments -->
+        <div
+          *ngIf="nftPost.ImageURLs && nftPost.ImageURLs[0] && !nftPost.ParentStakeID"
+          class="feed-post__image-container"
+          [ngClass]="{ 'mb-10px': quotedContent && showQuotedContent }"
+        >
+          <img
+            (click)="openImgModal($event, nftPost.ImageURLs[0])"
+            data-toggle="modal"
+            class="feed-post__image"
+            src="{{ mapImageURLs(nftPost.ImageURLs[0]) }}"
+          />
+        </div>
+        <!-- Video -->
+        <div
+          *ngIf="nftPost.VideoURLs && nftPost.VideoURLs[0] && !nftPost.ParentStakeID"
+          class="feed-post__video-container w-100"
+          [ngClass]="{ 'mb-10px': quotedContent && showQuotedContent }"
+        >
+          <iframe
+            [src]="nftPost.VideoURLs[0] | sanitizeVideoUrl"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+            allowfullscreen
+            class="feed-post__video"
+          ></iframe>
+        </div>
+        <!-- Video -->
+      </div>
+    </div>
+    <div class="nft_bx nft_feed_post_wt_design">
+      <div *ngIf="nftPost && nftBidData" class="position-relative">
+        <feed-post
+          [post]="nftPost"
+          [includePaddingOnPost]="true"
+          [isParentPostInThread]="true"
+          [showLeftSelectedBorder]="true"
+          [showInteractionDetails]="true"
+          [blocked]="isPostBlocked(nftPost)"
+          [showName]="true"
+          [showNFTDetails]="true"
+          [showExpandedNFTDetails]="true"
+          [contentShouldLinkToThread]="true"
+          [afterCommentCreatedCallback]="incrementCommentCounter.bind(this)"
+          [isNFTDetail]="true"
+          [showNFTOwnerInfo]="hightestBidOwner"
+          (userBlocked)="afterUserBlocked($event)"
+          (nftBidPlaced)="afterNftBidPlaced($event)"
+        ></feed-post>
+      </div>
+    </div>
+    <div class="nft_bx linebx">
+      <h3 class="hdb">All Bids</h3>
+      <simple-center-loader *ngIf="refreshingBids"></simple-center-loader>
+      <div *ngIf="!loading && !bids?.length" class="fs-15px p-15px pb-0 d-flex justify-content-center">
+        There are no bids yet.
+      </div>
+      <div *ngIf="!loading && bids?.length">
+        <div class="container d-flex align-items-center fs-14px py-15px border-bottom border-color-grey link--unstyled">
+          <div
+            class="col-5 p-0 text-align-center cursor-pointer"
+            (click)="handleColumnHeaderClick(NftPostComponent.SORT_BY_USERNAME)"
+          >
+            Bidder
+            <i
+              class="fas fs-14px"
+              [ngClass]="{
+                'fa-arrows-alt-v': sortByField !== NftPostComponent.SORT_BY_USERNAME,
+                'fa-sort-alpha-up-alt': sortByField === NftPostComponent.SORT_BY_USERNAME && sortDescending,
+                'fa-sort-alpha-down': sortByField === NftPostComponent.SORT_BY_USERNAME && !sortDescending
+              }"
+            ></i>
+          </div>
+          <div
+            class="col-2 p-0 text-align-center cursor-pointer"
+            *ngIf="nftPost.NumNFTCopies > 1"
+            (click)="handleColumnHeaderClick(NftPostComponent.SORT_BY_EDITION)"
+          >
+            Edition
+            <i
+              class="fas fs-14px"
+              [ngClass]="{
+                'fa-arrows-alt-v': sortByField !== NftPostComponent.SORT_BY_EDITION,
+                'fa-sort-amount-up-alt': sortByField === NftPostComponent.SORT_BY_EDITION && !sortDescending,
+                'fa-sort-amount-down': sortByField === NftPostComponent.SORT_BY_EDITION && sortDescending
+              }"
+            ></i>
+          </div>
+          <div
+            class="p-0 text-align-center cursor-pointer"
+            [ngClass]="{ 'col-7': nftPost.NumNFTCopies == 1, 'col-5': nftPost.NumNFTCopies > 1 }"
+            (click)="handleColumnHeaderClick(NftPostComponent.SORT_BY_PRICE)"
+          >
+            Bid Amount
+            <i
+              class="fas fs-14px"
+              [ngClass]="{
+                'fa-arrows-alt-v': sortByField !== NftPostComponent.SORT_BY_PRICE,
+                'fa-sort-amount-up-alt': sortByField === NftPostComponent.SORT_BY_PRICE && !sortDescending,
+                'fa-sort-amount-down': sortByField === NftPostComponent.SORT_BY_PRICE && sortDescending
+              }"
+            ></i>
+          </div>
+        </div>
+        <simple-center-loader *ngIf="refreshingBids"></simple-center-loader>
+        <div *ngIf="!refreshingBids">
+          <div
+            class="container d-flex align-items-center fs-14px p-15px border-color-grey link--unstyled"
+            *ngFor="let bidEntry of bids; let i = index"
+          >
+            <div class="row no-gutters w-100">
+              <div class="col-8 d-flex align-items-center mb-0 p-0">
+                <input
+                  class="pr-10px cursor-pointer"
+                  type="checkbox"
+                  style="width: 35px"
+                  *ngIf="
+                    activeTab === NftPostComponent.MY_AUCTIONS &&
+                    nftPost.NumNFTCopies > 1 &&
+                    userOwnsSerialNumber(bidEntry.SerialNumber)
+                  "
+                  [(ngModel)]="bidEntry.selected"
+                  (ngModelChange)="checkSelectedBidEntries(bidEntry)"
+                />
+                <input
+                  class="pr-10px cursor-pointer"
+                  type="radio"
+                  style="width: 35px"
+                  *ngIf="
+                    activeTab === NftPostComponent.MY_AUCTIONS &&
+                    nftPost.NumNFTCopies === 1 &&
+                    userOwnsSerialNumber(bidEntry.SerialNumber)
+                  "
+                  [value]="bidEntry"
+                  [(ngModel)]="selectedBid"
+                  (ngModelChange)="selectBidEntry(bidEntry)"
+                />
+                <i
+                  class="fas fa-trash pr-10px text-danger cursor-pointer fs-18px"
+                  *ngIf="activeTab === NftPostComponent.MY_BIDS"
+                  (click)="cancelBid(bidEntry)"
+                ></i>
+                <div class="simple-profile-card__avatar-container">
+                  <div class="simple-profile-card__avatar br-12px" [avatar]="bidEntry.PublicKeyBase58Check"></div>
+                </div>
+                <div class="text-truncate holdings__name fs-14px">
+                  <div class="d-flex">
+                    <div
+                      class="fc-default font-weight-bold text-truncate fs-14px"
+                      style="max-width: 120px"
+                      [ngClass]="{ 'cursor-pointer': !!bidEntry.ProfileEntryResponse?.Username }"
+                      [style.pointer-events]="!!bidEntry.ProfileEntryResponse?.Username ? 'auto' : 'none'"
+                      [routerLink]="
+                        bidEntry.ProfileEntryResponse?.Username
+                          ? ['/' + globalVars.RouteNames.USER_PREFIX, bidEntry.ProfileEntryResponse.Username]
+                          : []
+                      "
+                    >
+                      {{ bidEntry.ProfileEntryResponse?.Username || bidEntry.PublicKeyBase58Check }}
+                    </div>
+                    <span
+                      *ngIf="bidEntry.ProfileEntryResponse?.IsVerified"
+                      (click)="tooltip.toggle()"
+                      class="ml-1 mb-1 cursor-pointer text-primary"
+                      matTooltipClass="global__mat-tooltip global__mat-tooltip-font-size"
+                      [matTooltip]="'This account is verified'"
+                      #tooltip="matTooltip"
+                    >
+                      <i class="fas fa-check-circle fa-md align-middle"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="col-2 d-flex align-items-center justify-content-center mb-0 p-0" *ngIf="nftPost.NumNFTCopies > 1">{{ bidEntry.SerialNumber > 0 && "#" + bidEntry.SerialNumber.toString() }}</div> -->
+              <div
+                class="d-flex align-items-center mb-0 justify-content-around p-0"
+                [ngClass]="{ 'col-4': nftPost.NumNFTCopies == 1, 'col-4': nftPost.NumNFTCopies > 1 }"
+              >
+                <span>{{ globalVars.nanosToDeSo(bidEntry.BidAmountNanos, 5) }} $DESO</span>
+                <!-- <span>~{{ globalVars.nanosToUSD(bidEntry.BidAmountNanos, 2) }}</span> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nft_bx">
+      <div class="borderbg feed-post__blue-border" *ngIf="!loading">
+        <tab-selector [tabs]="tabs" [activeTab]="activeTab" (tabClick)="_handleTabClick($event)"></tab-selector>
+      </div>
+      <div *ngIf="showBidsView">
+        <div *ngIf="!loading && !bids?.length" class="fs-15px p-15px pb-0 d-flex justify-content-center">
+          There are no bids yet.
+          <button
+            class="btn btn-danger font-weight-bold fs-15px br-12px"
+            *ngIf="activeTab === NftPostComponent.MY_AUCTIONS && myAvailableSerialNumbers?.length"
+            (click)="closeAuction()"
+          >
+            Close my auctions
+          </button>
+        </div>
+        <div *ngIf="!loading && bids?.length">
+          <div
+            class="d-flex align-items-center p-15px pb-0 justify-content-between"
+            *ngIf="activeTab === NftPostComponent.MY_AUCTIONS && myAvailableSerialNumbers?.length"
+          >
+            <div
+              class="fs-14px cursor-pointer"
+              (click)="selectHighestBids()"
+              *ngIf="activeTab === NftPostComponent.MY_AUCTIONS"
+            >
+              Select Highest Bids
+            </div>
+            <div>
+              <div class="d-lg-inline-block d-block px-10px py-5px text-align-center">
+                <button
+                  class="btn btn-primary font-weight-bold fs-15px br-12px"
+                  style="height: 36px; width: 115px; line-height: 15px"
+                  [disabled]="sellNFTDisabled"
+                  (click)="sellNFT()"
+                  *ngIf="!loading && bids?.length"
+                >
+                  Sell NFT
+                </button>
+              </div>
+              <div class="d-lg-inline-block d-block px-10px py-5px text-align-center">
+                <button class="btn btn-danger font-weight-bold fs-15px br-12px" (click)="closeAuction()">
+                  Close my auctions
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="container d-flex align-items-center fs-14px py-15px border-bottom border-color-grey link--unstyled"
+          >
+            <div
+              class="col-5 p-0 text-align-center cursor-pointer"
+              (click)="handleColumnHeaderClick(NftPostComponent.SORT_BY_USERNAME)"
+            >
+              Bidder
+              <i
+                class="fas fs-14px"
+                [ngClass]="{
+                  'fa-arrows-alt-v': sortByField !== NftPostComponent.SORT_BY_USERNAME,
+                  'fa-sort-alpha-up-alt': sortByField === NftPostComponent.SORT_BY_USERNAME && sortDescending,
+                  'fa-sort-alpha-down': sortByField === NftPostComponent.SORT_BY_USERNAME && !sortDescending
+                }"
+              ></i>
+            </div>
+            <div
+              class="col-2 p-0 text-align-center cursor-pointer"
+              *ngIf="nftPost.NumNFTCopies > 1"
+              (click)="handleColumnHeaderClick(NftPostComponent.SORT_BY_EDITION)"
+            >
+              Edition
+              <i
+                class="fas fs-14px"
+                [ngClass]="{
+                  'fa-arrows-alt-v': sortByField !== NftPostComponent.SORT_BY_EDITION,
+                  'fa-sort-amount-up-alt': sortByField === NftPostComponent.SORT_BY_EDITION && !sortDescending,
+                  'fa-sort-amount-down': sortByField === NftPostComponent.SORT_BY_EDITION && sortDescending
+                }"
+              ></i>
+            </div>
+            <div
+              class="p-0 text-align-center cursor-pointer"
+              [ngClass]="{ 'col-7': nftPost.NumNFTCopies == 1, 'col-5': nftPost.NumNFTCopies > 1 }"
+              (click)="handleColumnHeaderClick(NftPostComponent.SORT_BY_PRICE)"
+            >
+              Bid Amount
+              <i
+                class="fas fs-14px"
+                [ngClass]="{
+                  'fa-arrows-alt-v': sortByField !== NftPostComponent.SORT_BY_PRICE,
+                  'fa-sort-amount-up-alt': sortByField === NftPostComponent.SORT_BY_PRICE && !sortDescending,
+                  'fa-sort-amount-down': sortByField === NftPostComponent.SORT_BY_PRICE && sortDescending
+                }"
+              ></i>
+            </div>
+          </div>
+          <simple-center-loader *ngIf="refreshingBids"></simple-center-loader>
+          <div *ngIf="!refreshingBids">
+            <div
+              class="container d-flex align-items-center fs-14px p-15px border-bottom border-color-grey link--unstyled"
+              *ngFor="let bidEntry of bids; let i = index"
+            >
+              <div class="row no-gutters w-100">
+                <div class="col-5 d-flex align-items-center mb-0 p-0">
+                  <!-- checkbox or radio button -->
+                  <input
+                    class="pr-10px cursor-pointer"
+                    type="checkbox"
+                    style="width: 35px"
+                    *ngIf="
+                      activeTab === NftPostComponent.MY_AUCTIONS &&
+                      nftPost.NumNFTCopies > 1 &&
+                      userOwnsSerialNumber(bidEntry.SerialNumber)
+                    "
+                    [(ngModel)]="bidEntry.selected"
+                    (ngModelChange)="checkSelectedBidEntries(bidEntry)"
+                  />
+                  <input
+                    class="pr-10px cursor-pointer"
+                    type="radio"
+                    style="width: 35px"
+                    *ngIf="
+                      activeTab === NftPostComponent.MY_AUCTIONS &&
+                      nftPost.NumNFTCopies === 1 &&
+                      userOwnsSerialNumber(bidEntry.SerialNumber)
+                    "
+                    [value]="bidEntry"
+                    [(ngModel)]="selectedBid"
+                    (ngModelChange)="selectBidEntry(bidEntry)"
+                  />
+                  <i
+                    class="fas fa-trash pr-10px text-danger cursor-pointer fs-18px"
+                    *ngIf="activeTab === NftPostComponent.MY_BIDS"
+                    (click)="cancelBid(bidEntry)"
+                  ></i>
+                  <!-- Avatar -->
+                  <div class="simple-profile-card__avatar-container">
+                    <div class="simple-profile-card__avatar br-12px" [avatar]="bidEntry.PublicKeyBase58Check"></div>
+                  </div>
+                  <div class="text-truncate holdings__name fs-14px">
+                    <div class="d-flex">
+                      <div
+                        class="fc-default font-weight-bold text-truncate fs-14px"
+                        style="max-width: 120px"
+                        [ngClass]="{ 'cursor-pointer': !!bidEntry.ProfileEntryResponse?.Username }"
+                        [style.pointer-events]="!!bidEntry.ProfileEntryResponse?.Username ? 'auto' : 'none'"
+                        [routerLink]="
+                          bidEntry.ProfileEntryResponse?.Username
+                            ? ['/' + globalVars.RouteNames.USER_PREFIX, bidEntry.ProfileEntryResponse.Username]
+                            : []
+                        "
+                      >
+                        {{ bidEntry.ProfileEntryResponse?.Username || bidEntry.PublicKeyBase58Check }}
+                      </div>
+                      <span
+                        *ngIf="bidEntry.ProfileEntryResponse?.IsVerified"
+                        (click)="tooltip.toggle()"
+                        class="ml-1 mb-1 cursor-pointer text-primary"
+                        matTooltipClass="global__mat-tooltip global__mat-tooltip-font-size"
+                        [matTooltip]="'This account is verified'"
+                        #tooltip="matTooltip"
+                      >
+                        <i class="fas fa-check-circle fa-md align-middle"></i>
+                      </span>
+                    </div>
+                    <div class="text-grey9" *ngIf="bidEntry.ProfileEntryResponse">
+                      {{ globalVars.nanosToUSD(bidEntry.ProfileEntryResponse.CoinPriceDeSoNanos, 2) }}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-2 d-flex align-items-center justify-content-center mb-0 p-0"
+                  *ngIf="nftPost.NumNFTCopies > 1"
+                >
+                  {{ bidEntry.SerialNumber > 0 && "#" + bidEntry.SerialNumber.toString() }}
+                </div>
+                <div
+                  class="d-flex align-items-center mb-0 justify-content-around p-0"
+                  [ngClass]="{ 'col-7': nftPost.NumNFTCopies == 1, 'col-5': nftPost.NumNFTCopies > 1 }"
+                >
+                  <span>{{ globalVars.nanosToDeSo(bidEntry.BidAmountNanos, 5) }} $DESO</span>
+                  <span>~{{ globalVars.nanosToUSD(bidEntry.BidAmountNanos, 2) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="activeTab === NftPostComponent.OWNERS">
+        <div *ngIf="!loading">
+          <div
+            class="container d-flex align-items-center fs-14px py-15px border-bottom border-color-grey link--unstyled"
+          >
+            <div
+              class="col-5 p-0 text-align-center cursor-pointer"
+              (click)="handleColumnHeaderClick(NftPostComponent.SORT_BY_USERNAME)"
+            >
+              Owner
+              <i
+                class="fas fs-14px"
+                [ngClass]="{
+                  'fa-arrows-alt-v': sortByField !== NftPostComponent.SORT_BY_USERNAME,
+                  'fa-sort-alpha-up-alt': sortByField === NftPostComponent.SORT_BY_USERNAME && sortDescending,
+                  'fa-sort-alpha-down': sortByField === NftPostComponent.SORT_BY_USERNAME && !sortDescending
+                }"
+              ></i>
+            </div>
+            <div
+              class="col-2 p-0 text-align-center cursor-pointer"
+              *ngIf="nftPost.NumNFTCopies > 1"
+              (click)="handleColumnHeaderClick(NftPostComponent.SORT_BY_EDITION)"
+            >
+              Edition
+              <i
+                class="fas fs-14px"
+                [ngClass]="{
+                  'fa-arrows-alt-v': sortByField !== NftPostComponent.SORT_BY_EDITION,
+                  'fa-sort-amount-up-alt': sortByField === NftPostComponent.SORT_BY_EDITION && !sortDescending,
+                  'fa-sort-amount-down': sortByField === NftPostComponent.SORT_BY_EDITION && sortDescending
+                }"
+              ></i>
+            </div>
+            <div
+              class="p-0 text-align-center cursor-pointer"
+              [ngClass]="{ 'col-7': nftPost.NumNFTCopies == 1, 'col-5': nftPost.NumNFTCopies > 1 }"
+              (click)="handleColumnHeaderClick(NftPostComponent.SORT_BY_PRICE)"
+            >
+              Last Price
+              <i
+                class="fas fs-14px"
+                [ngClass]="{
+                  'fa-arrows-alt-v': sortByField !== NftPostComponent.SORT_BY_PRICE,
+                  'fa-sort-amount-up-alt': sortByField === NftPostComponent.SORT_BY_PRICE && !sortDescending,
+                  'fa-sort-amount-down': sortByField === NftPostComponent.SORT_BY_PRICE && sortDescending
+                }"
+              ></i>
+            </div>
+          </div>
+          <div>
+            <div
+              class="container d-flex align-items-center fs-14px p-15px border-bottom border-color-grey link--unstyled"
+              *ngFor="let owner of owners; let i = index"
+            >
+              <div class="row no-gutters w-100">
+                <div class="col-5 d-flex align-items-center mb-0 p-0">
+                  <!-- Avatar -->
+                  <div class="simple-profile-card__avatar-container">
+                    <div class="simple-profile-card__avatar br-12px" [avatar]="owner.OwnerPublicKeyBase58Check"></div>
+                  </div>
+                  <div class="text-truncate holdings__name fs-14px">
+                    <div class="d-flex">
+                      <div
+                        class="fc-default font-weight-bold text-truncate holdings__name fs-14px"
+                        [ngClass]="{ 'cursor-pointer': !!owner.ProfileEntryResponse?.Username }"
+                        [style.pointer-events]="!!owner.ProfileEntryResponse?.Username ? 'auto' : 'none'"
+                        [routerLink]="
+                          owner.ProfileEntryResponse?.Username
+                            ? ['/' + globalVars.RouteNames.USER_PREFIX, owner.ProfileEntryResponse.Username]
+                            : []
+                        "
+                      >
+                        {{ owner.ProfileEntryResponse?.Username || owner.OwnerPublicKeyBase58Check }}
+                      </div>
+                      <span
+                        *ngIf="owner.ProfileEntryResponse?.IsVerified"
+                        (click)="tooltip.toggle()"
+                        class="ml-1 mb-1 cursor-pointer text-primary"
+                        matTooltipClass="global__mat-tooltip global__mat-tooltip-font-size"
+                        [matTooltip]="'This account is verified'"
+                        #tooltip="matTooltip"
+                      >
+                        <i class="fas fa-check-circle fa-md align-middle"></i>
+                      </span>
+                    </div>
+                    <div class="text-grey9" *ngIf="owner.ProfileEntryResponse">
+                      {{ globalVars.nanosToUSD(owner.ProfileEntryResponse.CoinPriceDeSoNanos, 2) }}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-2 d-flex align-items-center justify-content-center mb-0 p-0"
+                  *ngIf="nftPost.NumNFTCopies > 1"
+                >
+                  {{ owner.SerialNumber > 0 && "#" + owner.SerialNumber.toString() }}
+                </div>
+                <div
+                  class="d-flex align-items-center mb-0 justify-content-around p-0"
+                  [ngClass]="{ 'col-7': nftPost.NumNFTCopies == 1, 'col-5': nftPost.NumNFTCopies > 1 }"
+                >
+                  <span>{{ globalVars.nanosToDeSo(owner.LastAcceptedBidAmountNanos, 5) }} $DESO</span>
+                  <span>~{{ globalVars.nanosToUSD(owner.LastAcceptedBidAmountNanos, 2) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="activeTab === NftPostComponent.DETAILS">
+        <label class="mt-30px font-weight-bold">Properties</label>
+        <div class="nft-post-property-container">
+          <div *ngFor="let property of properties" class="d-flex flex-column flex-center nft-post-property-box mt-10px">
+            <label class="mb-0px fs-14px pl-10px pr-10px">{{ property[0].toUpperCase() }}</label>
+            <label class="mb-0px font-weight-bold fs-16px pl-10px pr-10px">{{ property[1] }}</label>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!loading && activeTab === NftPostComponent.THREAD && !reloadingThread">
+        <div *ngIf="!nftPost.CommentCount && !nftPost.ParentStakeID" class="p-15px d-flex justify-content-center">
+          There are no comments on this NFT yet.
+        </div>
+        <post-thread
+          [hideHeader]="true"
+          [fromNFTDetail]="true"
+          [hideCurrentPost]="!nftPost.ParentStakeID"
+          *ngIf="nftPost.CommentCount || nftPost.ParentStakeID"
+        ></post-thread>
+        <button
+          type="button"
+          class="add_comment_btn"
+          (click)="openRepostsModal($event)"
+          *ngIf="!(nftPost.CommentCount || nftPost.ParentStakeID)"
+        >
+          <i>+</i>
+          Comment
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="global__bottom-bar-mobile-height"></div>
+</div>

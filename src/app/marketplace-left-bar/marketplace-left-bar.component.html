@@ -1,0 +1,70 @@
+<div class="marketplace-nav-width">
+  <div class="global__nav__fixed__marketplace">
+    <div class="global__nav__inner__marketplace position-relative">
+      <label class="w-100 pl-10px marketplace-label">Sort by</label>
+      <select class="w-100 p-5px marketplace-select" (ngModelChange)="onSelectChange($event)" [ngModel]="selectValue">
+        <option value="Most recent first">Most recent first</option>
+        <option value="Oldest first">Oldest first</option>
+        <option value="Highest price first">Highest price first</option>
+        <option value="Lowest price first">Lowest price first</option>
+      </select>
+      <label class="w-100 mt-20px pl-10px marketplace-label">Status</label>
+      <button
+        class="w-100 marketplace-filter-button pl-10px"
+        [ngClass]="status === 'All' ? 'market-button-active' : ''"
+        (click)="changeStatus('All')"
+      >
+        All
+      </button>
+      <button
+        class="w-100 mt-5px marketplace-filter-button pl-10px"
+        [ngClass]="status === 'Has bids' ? 'market-button-active' : ''"
+        (click)="changeStatus('Has bids')"
+      >
+        Has bids
+      </button>
+      <button
+        class="w-100 mt-5px marketplace-filter-button pl-10px"
+        [ngClass]="status === 'No bids yet' ? 'market-button-active' : ''"
+        (click)="changeStatus('No bids yet')"
+      >
+        No bids yet
+      </button>
+      <!--<button
+        class="w-100 mt-5px marketplace-filter-button pl-10px"
+        [ngClass]="status === 'For sale' ? 'market-button-active' : ''"
+        (click)="changeStatus('For sale')"
+      >
+        For sale
+      </button>-->
+      <button
+        class="w-100 mt-5px marketplace-filter-button pl-10px"
+        [ngClass]="status === 'Sold' ? 'market-button-active' : ''"
+        (click)="changeStatus('Sold')"
+      >
+        Sold
+      </button>
+      <label class="w-100 mt-20px pl-10px marketplace-label">Market</label>
+      <button
+        class="w-100 marketplace-filter-button d-flex flex-row align-items-center pl-10px position-relative"
+        [ngClass]="primary ? 'market-button-checked' : ''"
+        (click)="togglePrimary()"
+      >
+        <input type="checkbox" class="marketplace-button-checkbox display-none" [checked]="primary" />
+        <label class="marketplace-checkbox-label">Primary</label>
+      </button>
+      <button
+        class="w-100 mt-5px marketplace-filter-button d-flex flex-row align-items-center pl-10px position-relative"
+        [ngClass]="secondary ? 'market-button-checked' : ''"
+        (click)="toggleSecondary()"
+      >
+        <input type="checkbox" class="marketplace-button-checkbox display-none" [checked]="secondary" />
+        <label class="marketplace-checkbox-label">Secondary</label>
+      </button>
+      <button class="marketplace-apply-button" (click)="apply()">
+        <label *ngIf="!loading; else elseBlock" class="mb-0px">Apply</label>
+        <ng-template #elseBlock><i class="fa fa-spinner fa-spin"></i></ng-template>
+      </button>
+    </div>
+  </div>
+</div>

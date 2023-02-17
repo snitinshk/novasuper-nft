@@ -1,0 +1,158 @@
+<div class="bids-accordion-container br-13px mt-10px">
+  <button class="w-100 activity-box-bids" (click)="toggleAccordion()">
+    <!-- IMAGE -->
+    <div class="activity-frame-container-bids">
+      <div
+        *ngIf="
+          nftEntry.PostEntryResponse?.ImageURLs &&
+          nftEntry.PostEntryResponse?.ImageURLs[0] &&
+          !nftEntry.PostEntryResponse?.ParentStakeID
+        "
+        class="image-size-active-bids-accordion"
+      >
+        <img data-toggle="modal" class="h-100" src="{{ mapImageURLs(nftEntry.PostEntryResponse.ImageURLs[0]) }}" />
+      </div>
+      <!-- VIDEO -->
+      <div
+        *ngIf="nftEntry.PostEntryResponse?.VideoURLs && nftEntry.PostEntryResponse?.VideoURLs[0]"
+        class="image-size-active-bids-accordion"
+        [ngClass]="{ 'mb-10px': quotedContent && showQuotedContent }"
+      >
+        <iframe
+          [src]="nftEntry.PostEntryResponse.VideoURLs[0] | sanitizeVideoUrl"
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+          allowfullscreen
+          class="feed-post__video"
+        ></iframe>
+      </div>
+    </div>
+    <div class="active-bids-bid-info-accordion">
+      <div class="h-80 w-100 bids-highest-bid position-relative">
+        <label class="fs-14px color-light font-weight-semiboldn mb-0px p-a-top">HIGHEST BID</label>
+        <div class="fs-26px font-weight-bold mt-5px text-overflow-ellipsis">
+          <span>
+            {{ globalVars.nanosToUSD(nftEntry.NFTEntryResponses[0].HighestBidAmountNanos, 2) }}
+          </span>
+        </div>
+        <div class="fs-14px p-a-bottom text-overflow-ellipsis">
+          <span>{{ globalVars.nanosToDeSo(nftEntry.NFTEntryResponses[0].HighestBidAmountNanos, 5) }} $DESO</span>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-center-start h-100 grid-area-c">
+      <div class="d-flex flex-column flex-start-center h-80 position-relative">
+        <label class="font-weight-semiboldn color-light mb-0px fs-14px font-weight-semiboldn mb-0px p-a-top">
+          MADE BY
+        </label>
+        <div class="d-flex flex-row flex-center mt-10px">
+          <div>
+            <div
+              class="received-bids-avatar br-30px"
+              [avatar]="nftEntry.BidEntryResponses[0]?.PublicKeyBase58Check"
+            ></div>
+          </div>
+          <div class="d-flex">
+            <div
+              class="fc-default ml-10px font-weight-bold text-overflow-ellipsis text-truncate fs-18px"
+              style="max-width: 120px"
+              [ngClass]="{ 'cursor-pointer': !!nftEntry.BidEntryResponses[0]?.ProfileEntryResponse?.Username }"
+              [style.pointer-events]="!!nftEntry.BidEntryResponses[0]?.ProfileEntryResponse?.Username ? 'auto' : 'none'"
+              [routerLink]="
+                nftEntry.BidEntryResponses[0]?.ProfileEntryResponse?.Username
+                  ? [
+                      '/' + globalVars.RouteNames.USER_PREFIX,
+                      nftEntry.BidEntryResponses[0]?.ProfileEntryResponse.Username
+                    ]
+                  : []
+              "
+            >
+              {{
+                nftEntry.BidEntryResponses[0]?.ProfileEntryResponse?.Username ||
+                  nftEntry.BidEntryResponses[0]?.PublicKeyBase58Check
+              }}
+            </div>
+            <span
+              *ngIf="nftEntry.BidEntryResponses[0]?.ProfileEntryResponse?.IsVerified"
+              (click)="tooltip.toggle()"
+              class="ml-1 mb-1 cursor-pointer text-primary"
+              matTooltipClass="global__mat-tooltip global__mat-tooltip-font-size"
+              [matTooltip]="'This account is verified'"
+              #tooltip="matTooltip"
+            >
+              <i class="fas fa-check-circle fa-md align-middle"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bids-dropdown-icon-container h-100 grid-area-d">
+      <img class="bids-dropdown-icon" [ngClass]="accordionOpen ? 'open' : ''" src="/assets/icons/chevron-down.svg" />
+    </div>
+  </button>
+  <div class="bids-received-accordion disable-scrollbars" [ngClass]="accordionOpen ? 'open' : ''">
+    <div *ngFor="let bidEntry of nftEntry.BidEntryResponses">
+      <button class="bids-received-bid">
+        <div class="grid-area-a d-flex flex-column flex-start-center h-100">
+          <div class="h-90 position-relative d-flex flex-center-start">
+            <label class="font-weight-semiboldn color-light mb-0px fs-14px font-weight-semiboldn mb-0px p-a-top-0">
+              BID on {{ bidEntry.SerialNumber > 0 && "#" + bidEntry.SerialNumber.toString() }}
+            </label>
+            <div class="mt-15px">
+              <span class="fs-28px font-weight-semiboldn text-overflow-ellipsis">
+                {{ globalVars.nanosToUSD(bidEntry.BidAmountNanos, 2) }}
+              </span>
+              <span class="fs-20px ml-10px color-light text-overflow-ellipsis">
+                {{ globalVars.nanosToDeSo(bidEntry.BidAmountNanos, 5) }} $DESO
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="grid-area-b h-100 d-flex flex-center-start">
+          <div class="d-flex flex-column flex-start-center h-90 position-relative pr-10px">
+            <label class="font-weight-semiboldn color-light mb-0px fs-14px font-weight-semiboldn mb-0px p-a-top-0">
+              MADE BY
+            </label>
+            <div class="d-flex flex-row flex-center mt-15px">
+              <div>
+                <div class="received-bids-avatar br-30px" [avatar]="bidEntry.PublicKeyBase58Check"></div>
+              </div>
+              <div class="d-flex">
+                <div
+                  class="fc-default ml-10px text-overflow-ellipsis font-weight-bold text-truncate fs-18px"
+                  style="max-width: 120px"
+                  [ngClass]="{ 'cursor-pointer': !!bidEntry.ProfileEntryResponse?.Username }"
+                  [style.pointer-events]="!!bidEntry.ProfileEntryResponse?.Username ? 'auto' : 'none'"
+                  [routerLink]="
+                    bidEntry.ProfileEntryResponse?.Username
+                      ? ['/' + globalVars.RouteNames.USER_PREFIX, bidEntry.ProfileEntryResponse.Username]
+                      : []
+                  "
+                >
+                  {{ bidEntry.ProfileEntryResponse?.Username || bidEntry.PublicKeyBase58Check }}
+                </div>
+                <span
+                  *ngIf="bidEntry.ProfileEntryResponse?.IsVerified"
+                  (click)="tooltip.toggle()"
+                  class="ml-1 mb-1 cursor-pointer text-primary"
+                  matTooltipClass="global__mat-tooltip global__mat-tooltip-font-size"
+                  [matTooltip]="'This account is verified'"
+                  #tooltip="matTooltip"
+                >
+                  <i class="fas fa-check-circle fa-md align-middle"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid-area-c h-100 d-flex flex-center">
+          <button
+            (click)="checkSelectedBidEntries(bidEntry)"
+            class="black-rounded-button font-weight-bold h-40px w-100 max-width-225px"
+          >
+            Accept bid
+          </button>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>

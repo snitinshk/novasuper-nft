@@ -1,0 +1,23 @@
+<!--
+  Almost all pages should use this component to support both mobile and desktop views
+  -->
+
+<app-header></app-header>
+<div [class]="mobile ? 'global__mobile' : 'global__desktop'">
+  <div class="m_inner_wrapper">
+    <left-bar *ngIf="!mobile"></left-bar>
+    <left-bar-mobile *ngIf="mobile"></left-bar-mobile>
+
+    <div class="global__content__flex">
+      <div [class]="mobile || hideSidebar ? 'global__content__width' : 'global__center__width'">
+        <ng-content></ng-content>
+      </div>
+
+      <bottom-bar-mobile
+        *ngIf="mobile"
+        class="global__bottom-bar-mobile scrolled"
+        [showPostButton]="showPostButton"
+      ></bottom-bar-mobile>
+    </div>
+  </div>
+</div>

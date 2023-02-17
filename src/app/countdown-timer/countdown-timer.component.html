@@ -1,0 +1,27 @@
+<div
+  class="cursor-pointer background-color-light-grey border-bottom"
+  [ngStyle]="{
+    'font-size': fontSize + 'px',
+    'border-radius': borderRadiusSize + 'px',
+    'font-weight': fontWeight
+  }"
+  (click)="navigateToURL()"
+>
+  <div
+    class="px-15px py-5px d-flex align-items-center"
+    [ngClass]="{
+      'justify-content-between': !(justifyLeft || justifyAround),
+      'justify-left': justifyLeft,
+      'justify-around': justifyAround
+    }"
+  >
+    <div>🎉</div>
+    <div [ngClass]="{ 'd-flex': !globalVars.isMobile() }">
+      <div>{{ timerText }}&nbsp;&nbsp;</div>
+      <div class="font-weight-semibold">
+        {{ days + "d " + hours + "h " + minutes + "m " + seconds + "s" }}
+      </div>
+    </div>
+    <div>🎉</div>
+  </div>
+</div>

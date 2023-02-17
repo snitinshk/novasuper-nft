@@ -1,0 +1,69 @@
+.step-4 {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 500px;
+}
+@media (max-width: 550px) {
+    .step-4 {
+        width: 100%;
+    }
+}
+@media (max-width: 980px) {
+    .signup-header {
+        margin-top: 100px;
+    }
+}
+.signup-header {
+    padding-top: 20px;
+    font-size: 36px;
+    font-weight: bold;
+}
+.signup-label {
+    padding-top: 50px;
+    font-size: 16px;
+    font-weight: bold;
+}
+.singup-description {
+    font-size: 14px;
+    font-weight: lighter;
+}
+.signup-input-email {
+    padding: 20px 0 20px 0;
+    width: 90%;
+    max-width: 500px;
+}
+.signup-emailfield {
+    height: 50px;
+}
+.supernovas-continue-button {
+    margin-top: 25px;
+    width: 100%;
+    height: 55px;
+    border: none;
+    max-width: 500px;
+    background-image: url("/assets/img/nappi.png");
+    //background: linear-gradient(to top left, #F9D649,#e4c132, #F08F35, #FF188E, #1A4CFF,#322ba0, #74399A);
+    border-radius: 10px;
+    background-size: cover;
+    color: white;
+    font-weight: bold;
+}
+.signup-skip-button {
+    margin-top: 10px;
+    width: 100%;
+    border: rgba(0, 0, 0, 0);
+    background-color: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 10px;
+}
+.chevron {
+    width: min-content;
+    height: 20px;
+}
+.signup-skip-link {
+    padding-left: -15px;  
+}

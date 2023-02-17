@@ -1,0 +1,105 @@
+<simple-center-loader *ngIf="loading"></simple-center-loader>
+
+<!--Profile not found-->
+<not-found *ngIf="!profile && !loading"></not-found>
+
+<div *ngIf="profile && !loading" class="creator-profile-details-container">
+  <div class="w-100 d-flex flex-center">
+    <img id="banner-image" src="./assets/img/default-banner.png" class="firebase-cover-image" />
+  </div>
+  <div class="profile-content-container">
+    <creator-profile-top-card
+      *ngIf="profile && !loading"
+      [profile]="profile"
+      (userUnblocked)="unblockUser()"
+      (userBlocked)="blockUser()"
+    ></creator-profile-top-card>
+
+    <!-- Feed Selector -->
+    <tab-selector
+      [tabs]="['Created', 'Collected', 'Posts', 'Creator Coin']"
+      [activeTab]="activeTab"
+      (tabClick)="_handleTabClick($event)"
+    ></tab-selector>
+    <!-- Reserved -->
+    <div *ngIf="showProfileAsReserved() && activeTab === 'Posts'" class="p-15px">
+      <div class="background-color-grey p-35px br-12px d-flex flex-row align-items-center">
+        <i class="far fa-clock fs-1 fc-muted"></i>
+        <div class="ml-25px fc-default">
+          <p class="roboto-mono fs-18px mb-5px font-weight-semibold">
+            This profile has been reserved by the BitClout.com team
+          </p>
+          <p class="roboto-mono fs-15px">@{{ profile.Username }} has not joined Bitclout yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Posts -->
+    <div class="creator_post_wrap" *ngIf="profile && activeTab == 'Posts' && !loading">
+      <creator-profile-posts
+        [profile]="profile"
+        [showProfileAsReserved]="showProfileAsReserved()"
+        (blockUser)="userBlocked()"
+      ></creator-profile-posts>
+      <div *ngIf="globalVars.hasUserBlockedCreator(profile.PublicKeyBase58Check)" class="w-100 d-flex p-15px">
+        <span>
+          You have blocked {{ profile.Username }}.
+          <a (click)="unblock()">Unblock</a>
+          to see their posts.
+        </span>
+      </div>
+    </div>
+
+    <!-- Creator Coin Info -->
+    <div class="w-100 d-flex flex-column" *ngIf="activeTab == 'Creator Coin' && !loading">
+      <div class="w-100 d-flex justify-content-start px-15px fs-15px">
+        <div class="container border-bottom border-color-grey font-weight-bold pl-0px py-15px">
+          Holders of ${{ profile.Username }} coin
+        </div>
+      </div>
+
+      <div>
+        <div class="container fs-15px flex-grow-1">
+          <div class="row no-gutters border-bottom border-color-grey fc-muted">
+            <div class="col-6 d-flex py-15px mb-0">Username or PubKey</div>
+            <div class="col-3 py-15px mb-0">Coins Held</div>
+            <div class="col-3 py-15px mb-0">
+              Market Value
+              <i
+                class="fas fa-info-circle text-greyC fs-15px global__tooltip-icon"
+                matTooltipClass="global__mat-tooltip global__mat-tooltip-font-size"
+                [matTooltip]="'This is computed as the number of coins times the current price.'"
+                #tooltip="matTooltip"
+                (click)="tooltip.toggle()"
+              ></i>
+            </div>
+          </div>
+          <creator-profile-hodlers [profile]="profile"></creator-profile-hodlers>
+        </div>
+      </div>
+      <div class="w-100 p-35px"></div>
+    </div>
+
+    <!-- Collected -->
+    <div class="w-100 d-flex flex-column" *ngIf="activeTab == 'Collected' && !loading">
+      <app-creator-profile-collected
+        [profile]="profile"
+        [showProfileAsReserved]="showProfileAsReserved()"
+        (blockUser)="userBlocked()"
+      ></app-creator-profile-collected>
+      <div class="w-100 p-35px"></div>
+    </div>
+
+    <!-- Created -->
+    <div class="w-100 d-flex flex-column" *ngIf="activeTab == 'Created' && !loading">
+      <app-creator-profile-created
+        [profile]="profile"
+        [showProfileAsReserved]="showProfileAsReserved()"
+        (blockUser)="userBlocked()"
+      ></app-creator-profile-created>
+      <div class="w-100 p-35px"></div>
+    </div>
+  </div>
+</div>
+<!-- SPACER FOR BOTTOM BAR ON MOBILE -->
+<div class="global__bottom-bar-mobile-height"></div>

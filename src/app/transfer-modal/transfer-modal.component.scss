@@ -1,0 +1,87 @@
+.modal-container {
+    height: 500px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center !important;
+    align-items: center;
+}
+.select-transfer-modal {
+    width: 200px;
+    height: calc(1.5em + .75rem + 2px);
+    border-radius: 30px;
+    border: 1px solid var(--border);
+    background: url(http://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/br_down.png) no-repeat right rgb(255, 255, 255);
+    -webkit-appearance: none;
+    background-position-x: calc(100% - 10px);
+}
+.transfer-modal-button {
+    border-radius: 5px;
+    color: white;
+    outline: none;
+    border: none;
+    font-weight: bold;
+    width: 150px;
+    height: 30px;
+    &:hover {
+        transform: scale(1.05);
+        transition-duration: 0.3s;
+    }
+}
+.textarea-transfer {
+    border-radius: 5px !important;
+}
+.overwrite-min-height {
+    min-height: 450px !important;
+}
+.overwrite-min-height2 {
+    min-height: 400px !important;
+}
+.accept-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.transfer-modal-button {
+    height: 40px;
+}
+.mb--12px {
+    margin-bottom: -12px;
+}
+@media (max-width: 950px) {
+    .mb--12px {
+        margin-bottom: 0px;
+    }
+}
+.transfer-label {
+    font-weight: bold;
+}
+.modal-header-container {
+    width: 100% !important;
+    padding: 20px;
+}
+.burn-text {
+    font-weight: normal;
+    font-size: 18px;
+}
+.transfer-button {
+    background: linear-gradient(45deg, #f3a83c 0%, #ec5454 20%, #f51ac1 35%, #2749f0 74%, #593eb7 99%) !important;
+}
+.accept-button {
+    background: linear-gradient(45deg, #f3a83c 0%, #ec5454 20%, #f51ac1 35%, #2749f0 74%, #593eb7 99%) !important;
+}
+.burn-button {
+    background: linear-gradient(45deg, #f3a83c 0%, #ec5454 20%, #f51ac1 35%, #2749f0 74%, #593eb7 99%) !important;
+}
+.burn-button2 {
+    background-color: #000000;
+}
+.success-img {
+    transform: scale(0.95);
+}
+.close-window-button {
+    background-color: transparent;
+    border: 2px solid #000000;
+    color: #000000;
+}

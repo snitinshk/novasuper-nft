@@ -1,0 +1,407 @@
+<!-- Top Bar -->
+<div
+  class="global__top-bar global__top-bar__height topbar-update-profile d-flex align-items-center pl-15px fs-18px border-bottom border-color-grey max-width-profile"
+  *ngIf="!this.loggedInUser.CanCreateProfile"
+>
+  <p class="font-weight-bold" *ngIf="!globalVars.loggedInUser.ProfileEntryResponse?.Username">Create Your Profile</p>
+</div>
+
+<div class="global__top-bar__height" *ngIf="!this.loggedInUser.CanCreateProfile"></div>
+<div class="global__top-bar__height" *ngIf="globalVars.isMobile()"></div>
+
+<div
+  *ngIf="inTutorial"
+  class="d-flex align-items-center justify-content-start w-100 p-3 fs-18px font-weight-bold border-bottom border-color-grey secalt-bg"
+>
+  <top-bar-mobile-hamburger-menu class="mr-15px d-lg-none d-inline-block"></top-bar-mobile-hamburger-menu>
+  <div>
+    <h3 class="mb-1 fs-24px font-weight-semibold">Update Profile</h3>
+    <h5 class="fs-15px fc-muted">Step 3 of 6</h5>
+  </div>
+</div>
+
+<div class="p-3" style="margin-bottom: -20px" *ngIf="inTutorial">
+  <div class="d-flex flex-column justify-flex-start">
+    <h5 class="fs-15px">Everyone needs a profile. Let's update yours!</h5>
+  </div>
+</div>
+<div class="mt-20px"></div>
+<div
+  *ngIf="
+    !globalVars.loggedInUser?.ProfileEntryResponse &&
+    ((!globalVars.loggedInUser?.HasPhoneNumber && !globalVars.loggedInUser?.JumioVerified) ||
+      !globalVars.isCompProfileCreation) &&
+    globalVars.createProfileFeeNanos > 0 &&
+    this.loggedInUser.CanCreateProfile
+  "
+  class="d-flex flex-center"
+  [ngClass]="globalVars.isMobile() ? 'w-100' : 'feed-cover'"
+>
+  <div class="p-15px fs-14px font-weight-semiboldn d-flex flex-center up-cost-warning h-100 w-100">
+    <img src="../assets/icons/info-icon.svg" class="mr-10px" alt="info icon" />
+    Creating a profile costs {{ globalVars.createProfileFeeInDeSo() }} DeSo ≈
+    {{ globalVars.createProfileFeeInUsd() }} USD. This helps prevent spam.
+  </div>
+</div>
+<div
+  *ngIf="this.loggedInUser.CanCreateProfile; else elseBlock"
+  class="update-profile-container"
+  [ngClass]="globalVars.isMobile() ? 'w-100' : 'feed-cover'"
+>
+  <!-- Create Profile Fee Warning -->
+  <div class="d-flex flex-column">
+    <div style="flex-grow: 1">
+      <simple-center-loader *ngIf="!globalVars.loggedInUser"></simple-center-loader>
+      <!-- Form Inputs -->
+      <div *ngIf="globalVars.loggedInUser" class="fs-18px disable-scrollbars">
+        <h2 class="font-weight-semiboldn px-15px fs-24px mt-20px mb-20px ml-10px">Settings</h2>
+        <div class="position-relative px-15px">
+          <!-- BANNER IMAGE-->
+          <div class="mt-10px banner-image-container" style="position: relative">
+            <input
+              class="file-upload-button"
+              type="file"
+              accept="image/png, image/jpeg, image/webp"
+              id="file"
+              (change)="_uploadBannerImage($event.target.files)"
+              style="position: absolute; opacity: 0; cursor: pointer; width: 100%; height: 100%; padding: 0"
+            />
+            <button type="file" class="banner-image-button">
+              <div class="banner-image-text">
+                <div class="d-flex flex-row flex-center font-weight-bold color-white">
+                  <img src="/assets/icons/upload_grey.svg" alt="upload-icon" class="mr-10px" />
+                  Click to upload a banner image
+                </div>
+                <p class="color-white mt-10px">Recommended size is 975 x 250 pixels.</p>
+              </div>
+              <img id="banner-image" src="./assets/img/default-banner.png" class="banner-image" />
+            </button>
+          </div>
+          <!-- PROFILE PIC-->
+          <div
+            class="update-profile-avatar-image"
+            (mouseenter)="toggleProfilePicturePrompt()"
+            (mouseleave)="toggleProfilePicturePrompt()"
+          >
+            <input
+              class="file-upload-button"
+              type="file"
+              accept="image/png, image/jpeg"
+              id="file"
+              (change)="_handleFileInput($event.target.files)"
+              style="
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                opacity: 0;
+                cursor: pointer;
+                width: 100%;
+                height: 100%;
+                padding: 0;
+              "
+            />
+            <!--*ngIf="profilePicInput != null && profilePicInput.length > 0"-->
+            <button type="file" class="profile-image-update-button">
+              <div [style.background-image]="'url(' + profilePicInput + ')'"></div>
+              <div>
+                <div
+                  class="update-profile__image"
+                  [ngClass]="profilePicturePromtOpen ? 'darken' : ''"
+                  [style.background-image]="'url(' + profilePicInput + ')'"
+                ></div>
+              </div>
+            </button>
+            <div
+              [ngClass]="profilePicturePromtOpen ? 'visible' : 'hidden'"
+              class="update-profile-pp-prompt font-weight-bold fs-12px d-flex flex-center"
+            >
+              Click to update profile picture
+            </div>
+          </div>
+        </div>
+        <label class="px-15px mt-10px mb-5px fs-18px font-weight-semiboldn">Username</label>
+        <p class="px-15px fs-13px" style="color: #9e9e9e">Username must only use letters, numbers, or underscores</p>
+        <div class="px-15px mt-10px">
+          <input
+            [(ngModel)]="usernameInput"
+            class="update-profile-input update-profile-input-oneliner-height fs-15px lh-18px p-10px"
+            placeholder="Enter username"
+          />
+        </div>
+
+        <label class="px-15px mt-30px mb-5px fs-18px font-weight-semiboldn">Display name</label>
+        <p class="px-15px fs-13px" style="color: #9e9e9e">This name will show your profile.</p>
+        <div class="mt-10px px-15px">
+          <input
+            maxlength="30"
+            placeholder="Your full name or artist name."
+            value="{{ this.profileData?.name ? this.profileData?.name : '' }}"
+            [(ngModel)]="this.name"
+            class="update-profile-input update-profile-input-oneliner-height fs-15px lh-18px p-10px"
+          />
+        </div>
+
+        <label class="px-15px mt-30px mb-5px fs-18px font-weight-semiboldn">Bio</label>
+        <p class="px-15px fs-13px" style="color: #9e9e9e">Max 512 characters.</p>
+
+        <div class="px-15px mt-10px">
+          <textarea
+            [(ngModel)]="descriptionInput"
+            class="update-profile-input w-100 resize-none fs-15px p-10px"
+            rows="4"
+            maxlength="512"
+            cdkTextareaAutosize
+            #textarea
+            #autosize="cdkTextareaAutosize"
+          ></textarea>
+          <div
+            *ngIf="profileUpdateErrors.descriptionError"
+            [ngClass]="{ 'fc-red': profileUpdateErrors.descriptionError }"
+            class="fs-13px font-italic"
+          >
+            Description can only be 512 characters
+          </div>
+        </div>
+        <div *ngIf="!inTutorial" class="px-15px">
+          <div class="mt-30px mb-5px fs-18px font-weight-semiboldn">Founder Reward</div>
+          <p class="fs-13px" style="color: #9e9e9e">
+            The reward you will receive every time someone buys your Creator Coin.
+          </p>
+          <div class="mt-10px">
+            <div class="d-flex w-m-180px flex-row mint-page-royalty-element position-relative">
+              <input
+                [(ngModel)]="founderRewardInput"
+                min="0"
+                max="100"
+                type="number"
+                class="update-profile-reward-input w-50 update-profile-input-oneliner-height text-align-center font-weight-bold"
+                [disabled]="globalVars.loggedInUser.UsersWhoHODLYouCount === 0"
+              />
+              <label
+                class="update-profile-reward-label w-50 update-profile-input-oneliner-height mb-0px flex-center font-weight-bold"
+                (click)="tooltip.toggle()"
+                matTooltipClass="global__mat-tooltip global__mat-tooltip-font-size"
+                [matTooltip]="founderRewardTooltip()"
+                #tooltip="matTooltip"
+              >
+                %
+              </label>
+            </div>
+            <div
+              *ngIf="this.globalVars.loggedInUser.UsersWhoHODLYouCount === 0"
+              class="fc-muted font-italic fs-13px pt-5px"
+            >
+              * You must purchase your own coin before lowering your founder reward.
+            </div>
+            <div
+              *ngIf="profileUpdateErrors.founderRewardError"
+              [ngClass]="{ 'fc-red': profileUpdateErrors.founderRewardError }"
+              class="fs-13px font-italic pt-5px"
+            >
+              Please set a founder reward between 0-100.
+            </div>
+          </div>
+        </div>
+        <button
+          class="px-15px update-profile-dropdown update-profile-border-top mt-20px d-flex flex-row justify-content-between"
+          [ngClass]="contactsOpen ? 'background-color-secondary' : ''"
+          (click)="contactsOpen = !contactsOpen"
+        >
+          <div class="d-flex h-100 flex-start-center flex-column">
+            <label class="font-weight-semiboldn mb-5px fs-18px">Contact details</label>
+            <p style="color: #9e9e9e" class="fs-13px">Email</p>
+          </div>
+          <div class="h-100 d-flex flex-center">
+            <img
+              class="update-profile-dropdown-icon up-rotate-icon"
+              [ngClass]="contactsOpen ? 'open' : ''"
+              src="/assets/icons/chevron-down.svg"
+            />
+          </div>
+        </button>
+        <div
+          class="px-15px contactsAccordion d-flex flex-column flex-start-center disable-scrollbars"
+          [ngClass]="{ expanded: contactsOpen }"
+        >
+          <label class="mt-10px mb-0px fs-18px font-weight-semiboldn">Email</label>
+          <p style="color: #9e9e9e" class="fs-13px">Your email address. No spam, ever.</p>
+          <div class="form-group mt-10px w-100">
+            <input
+              type="email"
+              class="update-profile-input update-profile-input-oneliner-height fs-15px"
+              placeholder="Enter an email address."
+              [(ngModel)]="emailAddress"
+              (ngModelChange)="_validateEmail($event)"
+            />
+            <div class="fc-red fs-15px" *ngIf="invalidEmailEntered">Please enter a valid email address.</div>
+          </div>
+        </div>
+        <button
+          class="px-15px update-profile-dropdown update-profile-border-top d-flex flex-row justify-content-between"
+          [ngClass]="socialsOpen ? 'background-color-secondary' : ''"
+          (click)="socialsOpen = !socialsOpen"
+        >
+          <div class="d-flex h-100 flex-start-center flex-column">
+            <label class="font-weight-semiboldn mb-5px fs-18px">Social links</label>
+            <p style="color: #9e9e9e" class="fs-13px">Add links to your social profiles.</p>
+          </div>
+          <div class="h-100 d-flex flex-center">
+            <img
+              class="update-profile-dropdown-icon up-rotate-icon"
+              [ngClass]="socialsOpen ? 'open' : ''"
+              src="/assets/icons/chevron-down.svg"
+            />
+          </div>
+        </button>
+        <div class="px-15px socialsAccordion disable-scrollbars" [ngClass]="socialsOpen ? 'expanded' : ''">
+          <div class="social-input">
+            <label class="social-label">
+              <img src="assets/icons/profile-twitter-icon.svg" class="pr-5px" />
+              twitter.com/
+            </label>
+            <input
+              maxlength="30"
+              class="social-input-inner"
+              type="text"
+              placeholder="Your Twitter username without the '@'' sign"
+              value="{{ this.profileData?.twitter ? this.profileData?.twitter : '' }}"
+              [(ngModel)]="this.twitter"
+            />
+          </div>
+          <div class="social-input">
+            <label class="social-label">
+              <img src="assets/icons/profile-instagram-icon.svg" class="pr-5px" />
+              instagram.com/
+            </label>
+            <input
+              maxlength="30"
+              class="social-input-inner"
+              type="text"
+              placeholder="Your instagram username without the '@'' sign"
+              value="{{ this.profileData?.instagram ? this.profileData?.instagram : '' }}"
+              [(ngModel)]="this.instagram"
+            />
+          </div>
+          <div class="social-input">
+            <label class="social-label">
+              <img src="assets/icons/profile-discord-icon.svg" class="pr-5px" />
+              discord.gg/
+            </label>
+            <input
+              maxlength="30"
+              class="social-input-inner"
+              type="text"
+              placeholder="The ID in your Discord server invite link"
+              value="{{ this.profileData?.discord ? this.profileData?.discord : '' }}"
+              [(ngModel)]="this.discord"
+            />
+          </div>
+          <div class="social-input">
+            <label class="social-label">
+              <img src="assets/icons/profile-world-icon.svg" class="pr-5px minus-margin" />
+              Website
+            </label>
+            <input
+              maxlength="30"
+              class="social-input-inner"
+              type="text"
+              placeholder="Your website URL"
+              value="{{ this.profileData?.website ? this.profileData.website : '' }}"
+              [(ngModel)]="this.website"
+            />
+          </div>
+          <p>{{ this.profileData?.creator }}</p>
+        </div>
+        <button
+          *ngIf="!globalVars.loggedInUser.JumioFinishedTime"
+          class="px-15px update-profile-dropdown update-profile-border-top d-flex flex-row justify-content-between"
+          [ngClass]="verificationOpen ? 'background-color-secondary' : ''"
+          (click)="verificationOpen = !verificationOpen"
+        >
+          <div class="d-flex h-100 flex-start-center flex-column">
+            <label class="font-weight-semiboldn mb-5px fs-18px">Verification</label>
+            <p style="color: #9e9e9e" class="fs-13px text-align-start">
+              Verify your identity with Jumio and you will receive 0.1 $DESO for free.
+            </p>
+          </div>
+          <div class="h-100 d-flex flex-center">
+            <img
+              class="update-profile-dropdown-icon up-rotate-icon"
+              [ngClass]="verificationOpen ? 'open' : ''"
+              src="/assets/icons/chevron-down.svg"
+            />
+          </div>
+        </button>
+        <div
+          class="verifiedAccordion disable-scrollbars update-profile-border-bottom px-15px d-flex flex-column flex-start-center"
+          [ngClass]="verificationOpen ? 'expanded' : ''"
+        >
+          <label style="color: #222222" class="max-width-update-profile mt-10px font-weight-semibold mb-5px fs-16px">
+            By verifying your identity with our partner Jumio, you will receive 0.1 $DESO reward.
+          </label>
+          <br />
+          <label style="color: #222222" class="max-width-update-profile font-weight-semibold mb-5px fs-16px">
+            Supernovas will never see any of your personal details.
+          </label>
+          <button
+            (click)="globalVars.launchGetFreeDESOFlow()"
+            class="white-rounded-button fs-14px up-jumio-button mt-20px d-flex flex-center pl-10px pr-10px pt-5px pb-5px font-weight-bold"
+          >
+            <img class="mr-5px fs-13px" src="../assets/icons/lock.svg" />
+            Verify your ID with Jumio
+          </button>
+        </div>
+        <div class="mt-5px">
+          <div class="mt-10px" style="position: relative">
+            <div>
+              <div class="w-100 my-30px d-flex flex-column flex-center">
+                <a
+                  (click)="_updateProfile()"
+                  [ngClass]="{ 'btn-loading': updateProfileBeingCalled }"
+                  class="black-rounded-button d-flex flex-center update-profile-button font-weight-bold fs-15px mt-5px"
+                >
+                  {{ inTutorial ? "Next" : "Update Profile" }}
+                </a>
+                <i *ngIf="profileUpdated" class="mt-10px far fa-check-circle fa-lg fc-blue ml-10px"></i>
+                <div
+                  *ngIf="profilePicInput == null || profilePicInput.length == 0"
+                  [ngClass]="{ 'fc-red': profileUpdateErrors.profilePicError }"
+                  class="fs-13px text-grey5 mt-10px"
+                >
+                  Add a profile picture
+                </div>
+                <div
+                  *ngIf="profileUpdateErrors.usernameError"
+                  [ngClass]="{ 'fc-red': profileUpdateErrors.usernameError }"
+                  class="fs-13px mt-10px font-italic mt-5px"
+                >
+                  Please set a username
+                </div>
+                <div
+                  *ngIf="
+                    inTutorial && (!globalVars.loggedInUser?.MustCompleteTutorial || globalVars.loggedInUser?.IsAdmin)
+                  "
+                  (click)="globalVars.skipTutorial()"
+                  class="px-15px"
+                >
+                  <a class="btn btn-outline-primary btn-lg fs-15px text-left mt-5px">Exit</a>
+                </div>
+              </div>
+
+              <!-- SPACER FOR BOTTOM BAR ON MOBILE -->
+              <div class="global__bottom-bar-mobile-height"></div>
+              <div class="global__bottom-bar-mobile-height"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #elseBlock>
+  <div class="px-15px mt-30px">
+    <update-profile-get-starter-deso></update-profile-get-starter-deso>
+  </div>
+</ng-template>

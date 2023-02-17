@@ -1,0 +1,173 @@
+<div class="d-flex flex-column">
+  <div *ngIf="!isMobile">
+    <div *ngIf="globalVars.loggedInUser" class="border-bottom border-color-grey formbg create_post_wrapper">
+      <feed-create-post
+        [numberOfRowsInTextArea]="2"
+        [postRefreshFunc]="prependPostToFeed.bind(this)"
+      ></feed-create-post>
+    </div>
+
+    <!-- <div class="w-100 border-bottom border-color-grey light-grey-divider" style="min-height: 10px"></div> -->
+  </div>
+
+  <div *ngIf="isMobile" class="global__top-bar__height"></div>
+  <tab-selector
+    class="feed_tabs"
+    [tabs]="feedTabs"
+    [activeTab]="activeTab"
+    (tabClick)="_handleTabClick($event)"
+  ></tab-selector>
+
+  <countdown-timer
+    *ngIf="nextNFTShowcaseTime"
+    [timerText]="'The next NFT showcase drops in...'"
+    [fontWeight]="500"
+    [timerEnd]="nextNFTShowcaseTime"
+  ></countdown-timer>
+
+  <div [id]="getPullToRefreshMarkerId()"></div>
+  <button type="button" class="recent_post_btn" (click)="showRecent()">Show recent</button>
+  <!-- Posts -->
+
+  <!-- Show shimmer Loader Until page completely Load -->
+  <div class="feed_mobile_gap mt-2" *ngIf="showLoadingSpinner()">
+      <div class="single-card">
+        <div class="w-100">
+          <div class="d-flex flex-column js-feed-post position-relative">
+            <div class="nft-col-wrap" *ngFor='let in of counter(50) ;let i = index'>
+              <div class="card">
+                <loading-shimmer [tabType]="'FEED'"></loading-shimmer>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  
+  <div class="feed_mobile_gap" *ngIf="showGlobalOrFollowingPosts()">
+    <div *ngFor="let post of postsToShow()">
+      <div *ngIf="post.ProfileEntryResponse">
+        <!--
+            The post.parentPost stuff is a hack to make it so that a new comment shows up
+            in the feed with the "replying to @[parentPost.Username]" content diplayed.
+            post.parentPost is set in appendCommentAfterParentPost
+          -->
+        <ng-container *ngIf="post?.IsNFT">
+          <div class="mobile_feed_post">
+            <new-nft-card
+              *ngIf="post.ProfileEntryResponse"
+              [contentShouldLinkToThread]="true"
+              [pending]="false"
+              [includePaddingOnPost]="true"
+              [post]="post"
+              [afterCommentCreatedCallback]="appendCommentAfterParentPost.bind(this)"
+              [blocked]="
+                globalVars.hasUserBlockedCreator(globalVars.loggedInUser?.ProfileEntryResponse?.PublicKeyBase58Check)
+              "
+              [cardStyle]="true"
+              [fromFeed]="true"
+              [showNFTDetails]="true"
+              [profileFeed]="true"
+              (userBlocked)="userBlocked()"
+              [hoverable]="true"
+              [background]="true"
+            ></new-nft-card>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="isRepost(post) && post.RepostedPostEntryResponse.IsNFT">
+          <div class="mobile_feed_post">
+            <new-nft-card
+              *ngIf="post.ProfileEntryResponse"
+              [contentShouldLinkToThread]="true"
+              [pending]="false"
+              [includePaddingOnPost]="true"
+              [post]="post"
+              [afterCommentCreatedCallback]="appendCommentAfterParentPost.bind(this)"
+              [afterRepostCreatedCallback]="prependPostToFeed.bind(this)"
+              [blocked]="
+                globalVars.hasUserBlockedCreator(globalVars.loggedInUser?.ProfileEntryResponse?.PublicKeyBase58Check)
+              "
+              [cardStyle]="true"
+              [fromFeed]="true"
+              [showNFTDetails]="true"
+              [profileFeed]="true"
+              (userBlocked)="userBlocked()"
+              [hoverable]="true"
+            ></new-nft-card>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!isRepost(post) && post?.RepostedPostEntryResponse?.IsNFT">
+          <feed-post
+            *ngIf="post.ProfileEntryResponse"
+            [contentShouldLinkToThread]="true"
+            [includePaddingOnPost]="true"
+            [post]="post"
+            [afterCommentCreatedCallback]="appendCommentAfterParentPost.bind(this)"
+            [afterRepostCreatedCallback]="prependPostToFeed.bind(this)"
+            [blocked]="
+              globalVars.hasUserBlockedCreator(globalVars.loggedInUser?.ProfileEntryResponse?.PublicKeyBase58Check)
+            "
+            [cardStyle]="true"
+            [showNFTDetails]="true"
+            [profileFeed]="true"
+            (userBlocked)="userBlocked()"
+          ></feed-post>
+        </ng-container>
+        <ng-container *ngIf="!(post?.IsNFT || post?.RepostedPostEntryResponse?.IsNFT)">
+          <feed-post
+            *ngIf="post.ProfileEntryResponse"
+            [contentShouldLinkToThread]="true"
+            [includePaddingOnPost]="true"
+            [post]="post"
+            [afterCommentCreatedCallback]="appendCommentAfterParentPost.bind(this)"
+            [afterRepostCreatedCallback]="prependPostToFeed.bind(this)"
+            [blocked]="
+              globalVars.hasUserBlockedCreator(globalVars.loggedInUser?.ProfileEntryResponse?.PublicKeyBase58Check)
+            "
+            [cardStyle]="true"
+            [showNFTDetails]="true"
+            [profileFeed]="true"
+            (userBlocked)="userBlocked()"
+          ></feed-post>
+        </ng-container>
+      </div>
+    </div>
+
+    <div
+      *ngIf="showMoreButton()"
+      class="w-100 py-15px d-flex align-items-center justify-content-center cursor-pointer creator-leaderboard__load-more"
+      (click)="loadMorePosts()"
+    >
+      <div *ngIf="!activeTabReadyForDisplay()" (click)="loadMorePosts()" class="fs-15px">Load More</div>
+      <div *ngIf="activeTabReadyForDisplay()" class="fs-15px">Loading...</div>
+    </div>
+  </div>
+
+  <div *ngIf="activeTab === FeedComponent.SHOWCASE_TAB">
+    <nft-showcase></nft-showcase>
+  </div>
+
+  <div
+    *ngIf="showNoPostsFound()"
+    class="d-flex flex-column align-items-center justify-content-center fc-muted fs-15px p-15px text-center"
+    style="height: 400px"
+  >
+    <div>No posts yet</div>
+
+    <div class="mt-10px">
+      <a
+        class=""
+        [routerLink]="['/' + globalVars.RouteNames.BROWSE]"
+        [queryParams]="{ feedTab: FeedComponent.GLOBAL_TAB }"
+        queryParamsHandling="merge"
+      >
+        View the global feed
+      </a>
+      to find more people to follow
+    </div>
+  </div>
+  <simple-center-loader *ngIf="showLoadingSpinner()"></simple-center-loader>
+  <!-- SPACER FOR BOTTOM BAR ON MOBILE -->
+  <div class="global__bottom-bar-mobile-height"></div>
+  <div class="global__bottom-bar-mobile-height"></div>
+</div>

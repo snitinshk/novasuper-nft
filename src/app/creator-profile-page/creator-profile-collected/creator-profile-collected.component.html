@@ -1,0 +1,48 @@
+<!-- Posts -->
+<simple-center-loader [height]="200" *ngIf="isLoading"></simple-center-loader>
+<div class="fs-15px text-grey5 font-weight-bold d-flex flex-column pt-15px" *ngIf="!isLoading">
+</div>
+<div *ngIf="!showProfileAsReserved && !nftResponse?.length && !isLoading" class="pt-15px">
+  <div class="background-color-grey p-35px br-12px d-flex flex-row align-items-center" style="text-align: center">
+    <span *ngIf="profileBelongsToLoggedInUser(); else elseMissingPostBlock">No NFTs collected yet.</span>
+    <ng-template #elseMissingPostBlock>
+      <span>@{{ profile.Username }} has not acquired any NFTs yet.</span>
+    </ng-template>
+  </div>
+</div>
+<div *ngIf="!showProfileAsReserved">
+  <div class="p-15px pb-0">
+    <div *ngIf="nftResponse?.length">NFTs collected by @{{ profile.Username }}</div>
+  </div>
+  <div *ngIf="!globalVars.hasUserBlockedCreator(profile.PublicKeyBase58Check) && nftResponse?.length > 0">
+    <div
+      class="search-results"
+      infiniteScroll
+      [infiniteScrollDistance]="5"
+      [infiniteScrollThrottle]="150"
+      (scrolled)="onScroll()"
+    >
+      <div class="nfts-card-list nft_creator_list">
+        <div class="nft-col-wrap" *ngFor="let nftEntry of dataToShow">
+          <div class="max-width-350">
+            <new-nft-card
+              *ngIf="nftEntry.PostEntryResponse.ProfileEntryResponse"
+              [contentShouldLinkToThread]="true"
+              [includePaddingOnPost]="true"
+              [post]="nftEntry.PostEntryResponse"
+              [afterCommentCreatedCallback]="_prependComment.bind(this, nftEntry.PostEntryResponse, index)"
+              [blocked]="globalVars.hasUserBlockedCreator(profile.PublicKeyBase58Check)"
+              [showNFTDetails]="true"
+              [showExpandedNFTDetails]="false"
+              [setBorder]="true"
+              [showAvailableSerialNumbers]="true"
+              [cardStyle]="true"
+              [profilePublicKeyBase58Check]="profile.PublicKeyBase58Check"
+              (userBlocked)="userBlocked()"
+            ></new-nft-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

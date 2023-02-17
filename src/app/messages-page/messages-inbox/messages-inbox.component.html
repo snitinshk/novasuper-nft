@@ -1,0 +1,87 @@
+<!-- Top Bar -->
+<div
+  class="w-100 messages-top-bar-height global__top-bar__height border-bottom border-color-grey d-flex align-items-center pl-15px fs-22px font-weight-bold"
+>
+  <!-- Clear Inbox -->
+  <img src="/assets/icons/chat-plane-icon.svg" class="mr-10px" />
+  Messages
+
+  <!-- Settings -->
+  <div class="d-flex w-100 h-100 justify-content-end align-items-center pr-10px">
+    <div class="h-100 flex-center mr-10px">
+      <img
+        src="assets/icons/search-icon-mobile.svg"
+        class="messages-search-icon"
+        alt=""
+        (click)="showSearchBar()"
+        *ngIf="!isSearchOpen"
+      />
+      <i class="icon-close" *ngIf="isSearchOpen" (click)="showSearchBar()" title="Close search"></i>
+    </div>
+    <button class="chat-new-message" (click)="showSearchBar()">
+      <img src="/assets/icons/new-message.svg" class="pr-5px" />
+      New
+    </button>
+  </div>
+</div>
+
+<div *ngIf="messageThreads" class="messages-inbox__threads h-100 disable-scrollbars">
+  <!-- Search -->
+  <div class="inbox-search-container border-bottom border-color-grey">
+    <select
+      *ngIf="!isSearchOpen"
+      #selectElem
+      id="message-inbox-select"
+      class="inbox-select br-30px mt-15px mb-15px"
+      (change)="_handleTabClick(selectElem.value)"
+    >
+      <option [selected]="this.activeTab === 'All messages'">All messages</option>
+      <option [selected]="this.activeTab === 'My holders'">My holders</option>
+    </select>
+    <div *ngIf="isSearchOpen" class="inbox-search-cover mt-15px mb-15px">
+      <search-bar
+        [showCloutavista]="false"
+        [isSearchForUsersToMessage]="true"
+        [startingSearchText]="Search"
+        placeHolder="Search to send a message..."
+        [messages]="true"
+        (creatorToMessage)="_handleCreatorSelectedInSearch($event)"
+        [nopads]="true"
+      ></search-bar>
+    </div>
+  </div>
+  <!-- NOTE: We add any newMessageThread to the front of our messageThread array. -->
+  <!-- This is used to handle the creation of new message threads. -->
+  <div *ngFor="let thread of messageThreads; let ii = index">
+    <messages-thread
+      (click)="_handleMessagesThreadClick(thread)"
+      [isSelected]="
+        (selectedThread &&
+          selectedThread.PublicKeyBase58Check &&
+          thread.PublicKeyBase58Check == selectedThread.PublicKeyBase58Check) ||
+        (selectedThread === undefined && ii === 0)
+      "
+      [thread]="thread"
+    ></messages-thread>
+  </div>
+
+  <div
+    *ngIf="showMoreButton()"
+    class="w-100 py-15px d-flex align-items-center justify-content-center cursor-pointer creator-leaderboard__load-more"
+    (click)="loadMoreMessages()"
+  >
+    <div *ngIf="!fetchingMoreMessages" class="fs-15px">Load More</div>
+    <div *ngIf="fetchingMoreMessages" class="fs-15px">Loading...</div>
+  </div>
+  <div *ngIf="isMobile">
+    <div class="global__bottom-bar-mobile-height"></div>
+    <div class="global__bottom-bar-mobile-height"></div>
+    <div class="global__bottom-bar-mobile-height"></div>
+  </div>
+  <div class="global__bottom-bar-mobile-height"></div>
+</div>
+<bottom-bar-mobile
+  *ngIf="isMobile"
+  class="global__bottom-bar-mobile scrolled"
+  [showPostButton]="showPostButton"
+></bottom-bar-mobile>

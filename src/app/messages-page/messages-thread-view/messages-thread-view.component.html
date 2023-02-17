@@ -1,0 +1,93 @@
+<div class="d-flex flex-column position-relative" [ngClass]="!isMobile ? 'messages-thread-view' : ''">
+  <!-- Top Bar -->
+  <div
+    *ngIf="!isMobile"
+    class="w-100 border-bottom border-color-grey messages-top-bar-height d-flex align-items-center pl-15px fs-15px font-weight-bold top-bar-messages-thread"
+  >
+    <a
+      *ngIf="messageThread"
+      class="messages-thread__avatar mr-15px"
+      [ngClass]="{ 'cursor-auto': !counterpartyUsername() }"
+      [routerLink]="counterpartyUsername() ? AppRoutingModule.profilePath(counterpartyUsername()) : []"
+      queryParamsHandling="merge"
+      [avatar]="messageThread.PublicKeyBase58Check"
+    ></a>
+
+    <div *ngIf="messageThread">
+      <!-- Show username if avaialble-->
+      <div *ngIf="counterpartyUsername(); else elseBlock">
+        <a
+          class="link--unstyled"
+          [routerLink]="AppRoutingModule.profilePath(counterpartyUsername())"
+          queryParamsHandling="merge"
+        >
+          <span>{{ counterpartyUsername() }}</span>
+          <span *ngIf="messageThread.ProfileEntryResponse.IsVerified" class="ml-1 text-primary">
+            <i class="fas fa-check-circle fa-md align-middle"></i>
+          </span>
+        </a>
+      </div>
+      <!-- Otherwise show public key-->
+      <ng-template #elseBlock>
+        {{ messageThread.PublicKeyBase58Check }}
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Messages Container -->
+  <div class="w-100 background-messages-light m-0px p-0px" style="overflow: hidden">
+    <div
+      *ngIf="messageThread"
+      [ngClass]="!isMobile ? 'messages_scroll_height' : 'messages_scroll_height_mobile'"
+      class="p-15px w-100 disable-scrollbars"
+      style="overflow-y: scroll"
+      id="messagesContainer"
+      #messagesContainer
+    >
+      <message
+        *ngFor="let message of messageThread.Messages; let ii = index"
+        [counterpartyName]="counterpartyUsername()"
+        [nextMessage]="ii < messageThread.Messages.length - 1 ? messageThread.Messages[ii + 1] : null"
+        [message]="message"
+        [profile]="messageThread.ProfileEntryResponse"
+      ></message>
+      <div class="global__top-bar__height"></div>
+    </div>
+  </div>
+
+  <!-- Create Message Input -->
+  <div class="send-message-thread-container">
+    <div class="fake-textarea-container">
+      <div class="avatar-box-send-message">
+        <a
+          class="messages-thread__avatar_send_message"
+          [avatar]="this.globalVars.loggedInUser.PublicKeyBase58Check"
+        ></a>
+      </div>
+      <textarea
+        cdkTextareaAutosize
+        #autosize="cdkTextareaAutosize"
+        cdkAutosizeMinRows="1"
+        cdkAutosizeMaxRows="5"
+        (keypress)="_messageTextChanged($event)"
+        [(ngModel)]="messageText"
+        placeholder="Write something here..."
+        class="py-5px fs-15px messages-thread__border-radius flex-grow-1 form-control messages-textarea disable-scrollbars"
+        style="height: 50px"
+      ></textarea>
+      <button
+        *ngIf="!sendMessageBeingCalled"
+        (click)="_sendMessage()"
+        class="btn btn-send-message fs-15px ml-15px messages-thread__border-radius"
+      >
+        <img src="/assets/icons/white-send.svg" />
+      </button>
+      <button
+        *ngIf="sendMessageBeingCalled"
+        class="btn btn-send-message fs-15px ml-15px messages-thread__border-radius"
+      >
+        <i class="fa fa-spinner fa-spin"></i>
+      </button>
+    </div>
+  </div>
+</div>

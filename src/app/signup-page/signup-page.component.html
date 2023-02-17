@@ -1,0 +1,172 @@
+<div class="position-relative h-100 w-100 signup-container">
+  <header class="signup-header global__top-bar__height d-flex flex-center-start">
+    <a [routerLink]="'/' + this.globalVars.RouteNames.BROWSE">
+      <img src="/assets/img/supernovas-grey.png" class="ml-30px" alt="grey supernovas logo" />
+    </a>
+  </header>
+  <div class="global__top-bar__height"></div>
+  <div class="signup-body-container d-flex flex-center">
+    <div
+      *ngIf="stepNum === 1 || !globalVars.loggedInUser?.PublicKeyBase58Check"
+      class="singup-center d-flex flex-column flex-center"
+    >
+      <label class="font-weight-semiboldn text-align-center header-font-rezising">Connect with Deso Identity</label>
+      <label style="color: #666666" class="subheading-font-resizing mt-20px max-width-445px text-align-center">
+        You’ll be able to use your Deso Identity to interact with Supernovas.
+      </label>
+      <button
+        (click)="signUp()"
+        class="signup-main-button d-flex flex-center flex-row subheading-font-resizing mt-30px font-weight-semibold"
+      >
+        <img
+          class="logo-height-main-button mr-20px pointer-events-none"
+          src="assets/deso/logo-cropped.png"
+          alt="deso logo"
+        />
+        <p class="color-white pointer-events-none">Connect with Deso</p>
+      </button>
+    </div>
+    <div
+      *ngIf="
+        stepNum === 2 &&
+        globalVars.loggedInUser?.PublicKeyBase58Check &&
+        !globalVars.loggedInUser?.ProfileEntryResponse?.Username
+      "
+      class="singup-center signup-center-height disable-scrollbars d-flex flex-column flex-center"
+    >
+      <div class="max-width-445px">
+        <label class="font-weight-semiboldn mb-0px mt-20px header-font-rezising text-align-center">
+          Set up your contact details
+        </label>
+        <div class="h-120px mt-20px">
+          <label class="fs-18px mb-0px font-weight-semiboldn">Email</label>
+          <p style="color: #969696" class="fs-13px font-weight-semibold">Your email address.</p>
+          <input
+            type="text"
+            class="signup-input mt-10px"
+            [(ngModel)]="emailAddress"
+            (ngModelChange)="_validateEmail($event)"
+            placeholder="Email"
+          />
+          <div class="fc-red mt-5px fs-15px" *ngIf="invalidEmailEntered">Please enter a valid email address.</div>
+        </div>
+        <label class="fs-18px mb-0px font-weight-semiboldn">Phone number</label>
+        <p style="color: #969696" class="fs-13px font-weight-semibold">
+          Verify your phone number and you will receive 0.01 $DESO for free!
+        </p>
+        <div class="mt-10px">
+          <app-mobile-verification></app-mobile-verification>
+        </div>
+        <div class="w-100 d-flex flex-center">
+          <button
+            (click)="nextStep()"
+            class="black-rounded-button mb-20px basic-button-size d-flex color-white flex-center flex-row fs-15px mt-30px font-weight-bold"
+          >
+            Continue
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="
+        stepNum === 3 &&
+        globalVars.loggedInUser?.PublicKeyBase58Check &&
+        !globalVars.loggedInUser?.ProfileEntryResponse?.Username
+      "
+      class="singup-center disable-scrollbars signup-center-height d-flex flex-column flex-center"
+    >
+      <label class="font-weight-semiboldn mb-0px mt-20px fs-32px text-align-center">Pick your profile type</label>
+      <label style="color: #666666" class="max-width-445px fs-20px mt-20px mb-20px text-align-center">
+        Choose between creator and collector profile.
+      </label>
+      <div class="singup-card-box mb-20px max-width-445px">
+        <button
+          class="profile-type-card mt-20px p-0px"
+          (click)="creatorSelected()"
+          [ngClass]="{ 'electric-border': creator }"
+        >
+          <div class="h-60 w-100 d-flex flex-center background-color-secondary">
+            <img src="/assets/icons/creator.svg" alt="creator icon" />
+          </div>
+          <div class="h-40 w-100 mt-10px text-align-center">
+            <label class="fs-15px font-weight-bold pointer-events-none">CREATOR</label>
+            <label class="fs-11px pointer-events-none">I want to create NFT’s.</label>
+          </div>
+        </button>
+        <button
+          class="profile-type-card mt-20px p-0px"
+          (click)="collectorSelected()"
+          [ngClass]="{ 'electric-border': collector }"
+        >
+          <div class="h-60 w-100 d-flex flex-center background-color-secondary">
+            <img src="/assets/icons/collector.svg" alt="colletor icon" />
+          </div>
+          <div class="h-40 w-100 mt-10px text-align-center">
+            <label class="fs-15px font-weight-bold pointer-events-none">COLLECTOR</label>
+            <label class="fs-11px pointer-events-none">I want to buy and sell NFT’s.</label>
+          </div>
+        </button>
+      </div>
+      <button
+        (click)="nextStep()"
+        [disabled]="!creator && !collector"
+        class="black-rounded-button mb-20px basic-button-size d-flex color-white flex-center flex-row fs-15px mt-30px font-weight-bold"
+      >
+        Continue
+      </button>
+    </div>
+    <!--globalVars.loggedInUser?.PublicKeyBase58Check &&
+        (creator || collector) &&
+        !globalVars.loggedInUser?.ProfileEntryResponse?.Username-->
+    <div
+      *ngIf="
+        stepNum === 4 &&
+        globalVars.loggedInUser?.PublicKeyBase58Check &&
+        (creator || collector) &&
+        !globalVars.loggedInUser?.ProfileEntryResponse?.Username
+      "
+      class="singup-center disable-scrollbars d-flex flex-column flex-center"
+    >
+      <div class="max-width-445px">
+        <h2 class="fs-32px h-120px text-align-center w-100 d-flex flex-center font-weight-semiboldn">
+          Complete your profile
+        </h2>
+        <div class="h-120px mt-20px">
+          <label class="fs-18px mb-10px font-weight-semiboldn">Username</label>
+          <p style="color: #969696" class="fs-13px font-weight-semibold">
+            Username must only use letters, numbers, or underscores
+          </p>
+          <input
+            type="text"
+            [(ngModel)]="usernameInput"
+            (ngModelChange)="_validateUsername($event)"
+            class="signup-input mt-10px"
+            placeholder="Username"
+          />
+          <div
+            *ngIf="profileUpdateErrors.usernameError"
+            [ngClass]="{ 'fc-red': profileUpdateErrors.usernameError }"
+            class="fs-13px font-italic mt-5px"
+          >
+            Please set a username
+          </div>
+          <div *ngIf="usernameValidationError" class="fc-error fs-13px ml-5px mt-5px">
+            {{ usernameValidationError }}
+          </div>
+          <div *ngIf="!usernameValidationError && usernameInput?.length > 0" class="fc-success fs-13px ml-5px mt-5px">
+            {{ usernameInput }} is available
+          </div>
+        </div>
+        <div class="w-100 mt-20px h-120px d-flex flex-column flex-center">
+          <button
+            (click)="_updateProfile()"
+            [disabled]="usernameValidationError || usernameInput?.length === 0"
+            class="black-rounded-button basic-button-size d-flex color-white flex-center flex-row fs-15px font-weight-bold"
+          >
+            Create your profile
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

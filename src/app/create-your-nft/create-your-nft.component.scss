@@ -1,0 +1,13 @@
+@import "../../assets/popup-ui.scss";
+
+.page-create-nft{
+    width: 400px;
+    max-width: 100%;
+    margin: auto;
+    .popup-footer{
+        h6{
+            font-size: 13px;
+            margin-top: 25px;
+        }
+    }
+}

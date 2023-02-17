@@ -1,0 +1,85 @@
+<nav class="main-menu">
+  <ul>
+    <li>
+      <a>
+        <div class="small-nav-icon-container-decoration">
+          <img src="assets/icons/small-menu-dec.svg" class="small-nav-icon-decoration" />
+        </div>
+      </a>
+    </li>
+    <li class="small-nav-li">
+      <a [routerLink]="'/' + this.globalVars.RouteNames.BROWSE" [routerLinkActive]="['active']">
+        <div class="small-nav-icon-container">
+          <img src="assets/icons/feed-icon.svg" class="small-nav-icon" />
+        </div>
+        <span class="nav-text">Feed</span>
+      </a>
+    </li>
+    <li class="small-nav-li">
+      <a [routerLink]="'/' + globalVars.RouteNames.TRENDS" [routerLinkActive]="['active']">
+        <div class="small-nav-icon-container">
+          <img src="assets/icons/marketplace-icon.svg" class="small-nav-icon" />
+        </div>
+        <span class="nav-text">Marketplace</span>
+      </a>
+    </li>
+    <li class="small-nav-li" *ngIf="globalVars.loggedInUser?.ProfileEntryResponse">
+      <a [routerLink]="'/' + globalVars.RouteNames.ACTIVITY" [routerLinkActive]="['active']">
+        <div class="small-nav-icon-container">
+          <img src="assets/icons/activity_small_icon.svg" class="small-nav-icon-png" />
+        </div>
+        <span class="nav-text">Activity</span>
+      </a>
+    </li>
+    <li class="small-nav-li" *ngIf="globalVars.loggedInUser != null">
+      <a [routerLink]="'/' + globalVars.RouteNames.INBOX_PREFIX" [routerLinkActive]="['active']">
+        <div class="small-nav-icon-container">
+          <img src="assets/icons/messages-icon.svg" class="small-nav-icon" />
+        </div>
+        <span class="nav-text">Messages</span>
+        <div
+          *ngIf="globalVars.messageResponse && globalVars.messageResponse.NumberOfUnreadThreads != 0"
+          class="ml-5px p-5x fs-15px notification"
+        >
+          {{
+            globalVars.messageResponse.NumberOfUnreadThreads > 999
+              ? "999+"
+              : globalVars.messageResponse.NumberOfUnreadThreads
+          }}
+        </div>
+      </a>
+    </li>
+    <li class="small-nav-li" *ngIf="globalVars.loggedInUser != null">
+      <a [routerLink]="'/' + globalVars.RouteNames.WALLET" [routerLinkActive]="['active']">
+        <div class="small-nav-icon-container">
+          <img src="assets/icons/wallet-icon.svg" class="small-nav-icon" />
+        </div>
+        <span class="nav-text">Wallet</span>
+      </a>
+    </li>
+    <li class="small-nav-li" *ngIf="globalVars.loggedInUser && !globalVars.loggedInUser.ProfileEntryResponse?.Username">
+      <a [routerLink]="'/' + this.globalVars.RouteNames.UPDATE_PROFILE" [routerLinkActive]="['active']">
+        <div class="small-nav-icon-container">
+          <img src="assets/icons/profile-icon.svg" class="small-nav-icon" />
+        </div>
+        <span class="nav-text">Create profile</span>
+      </a>
+    </li>
+    <li class="small-nav-li margin-top-40px">
+      <a href="https://intercom.help/supernovas/en" target="_blank">
+        <div class="small-nav-icon-container">
+          <img src="assets/icons/support-icon.svg" class="small-nav-icon" />
+        </div>
+        <span class="nav-text">Support</span>
+      </a>
+    </li>
+    <!--<li class="small-nav-li">
+      <a [routerLink]="'/' + globalVars.RouteNames.SETTINGS" [routerLinkActive]="['active']">
+        <div class="small-nav-icon-container">
+          <img src="assets/icons/setting-icon.svg" class="small-nav-icon" />
+        </div>
+        <span class="nav-text">Settings</span>
+      </a>
+    </li>-->
+  </ul>
+</nav>

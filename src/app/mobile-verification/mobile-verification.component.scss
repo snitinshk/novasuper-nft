@@ -1,0 +1,37 @@
+.small-button-size {
+    width: 165px !important;
+    min-width: 165px;
+    height: 35px;
+}
+.small-button-width {
+    width: 165px !important;
+    min-width: 165px;
+}
+.mobile-input {
+    height: 36.5px !important;
+    border-radius: 5.669146537780762px;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05);
+}
+.mobile-verification-input-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    @media (max-width: 520px) {
+        flex-direction: column;
+        align-items: flex-start;
+        .black-rounded-button {
+            margin-top: 10px;
+        }
+        .white-rounded-button {
+            margin-top: 10px;
+        }
+    }
+}
+.w-259px {
+    max-width: 259px;
+    width: 100%;
+}
+.h-100px {
+    min-height: 100px;
+}

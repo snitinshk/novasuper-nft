@@ -1,0 +1,60 @@
+<!--MARKETPLACE CONTENT-->
+
+<!-- Show shimmer Loader Until page completely Load -->
+<div class="nfts-card-list" *ngIf="globalVars.isMarketplaceLoading">
+  <div class="nft-col-wrap" *ngFor='let in of counter(50) ;let i = index'>
+    <div class="card">
+    <loading-shimmer [tabType]="'MARKETPLACE'"></loading-shimmer>
+  </div>
+  </div>
+</div>
+
+<div *ngIf="!globalVars.isMarketplaceLoading">
+  <button type="button" class="recent_post_btn" (click)="showRecent()">Show recent</button>
+  <div
+    class="search-results"
+    infiniteScroll
+    [infiniteScrollDistance]="2"
+    [infiniteScrollThrottle]="150"
+    (scrolled)="onScroll()"
+  >
+    <div class="nfts-card-list">
+      <div class="nft-col-wrap" *ngFor="let nftCollection of globalVars.marketplaceDataToShow">
+        <div class="max-width-350">
+          <new-nft-card
+            [post]="nftCollection.PostEntryResponse"
+            [includePaddingOnPost]="true"
+            [pending]="false"
+            [showReplyingToContent]="nftCollection.PostEntryResponse.parentPost"
+            [parentPost]="nftCollection.PostEntryResponse.parentPost"
+            [contentShouldLinkToThread]="true"
+            [showNFTDetails]="true"
+            [showExpandedNFTDetails]="true"
+            [setBorder]="true"
+            [nftCollectionHighBid]="nftCollection.HighestBidAmountNanos"
+            [nftCollectionLowBid]="nftCollection.LowestBidAmountNanos"
+            [loadProfile]="true"
+          ></new-nft-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="!globalVars.isMarketplaceLoading && !nftCollections && !nftCollections?.length"
+  class="d-flex align-items-center justify-content-center"
+>
+  <div
+    class="d-flex flex-column align-items-center justify-content-center fc-muted fs-15px p-15px text-center"
+    style="height: 400px"
+  >
+    <div></div>
+  </div>
+</div>
+<simple-center-loader *ngIf="globalVars.isMarketplaceLoading"></simple-center-loader>
+<bottom-bar-mobile
+  *ngIf="mobile"
+  class="global__bottom-bar-mobile scrolled"
+  [showPostButton]="showPostButton"
+></bottom-bar-mobile>

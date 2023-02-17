@@ -1,0 +1,49 @@
+<div class="page-bottom-bar-mobile">
+  <div class="bottom-bar-list border-color-grey">
+    <bottom-bar-mobile-tab [link]="'/' + globalVars.RouteNames.BROWSE">
+      <div class="icon-cover">
+        <img src="assets/icons/feed-icon.svg" alt="" />
+      </div>
+      <h6>Feed</h6>
+    </bottom-bar-mobile-tab>
+
+    <bottom-bar-mobile-tab [link]="'/' + globalVars.RouteNames.TRENDS">
+      <div class="icon-cover">
+        <img src="assets/icons/marketplace-icon.svg" alt="" />
+      </div>
+      <h6>Marketplace</h6>
+    </bottom-bar-mobile-tab>
+
+    <button *ngIf="globalVars.loggedInUser" class="btn btn-create clout" [matMenuTriggerFor]="createMenu">
+      Create
+    </button>
+    <mat-menu #createMenu="matMenu" class="create_post_mmnenu">
+      <div class="create-menu-cover">
+        <button mat-menu-item [routerLink]="'/' + globalVars.RouteNames.CREATE_POST">
+          <div class="icon-cover">
+            <img src="assets/icons/create_post.svg" alt="Post" />
+          </div>
+          Create a Post
+        </button>
+        <button mat-menu-item [routerLink]="'/' + globalVars.RouteNames.MINT_PAGE">
+          <div class="icon-cover">🎨</div>
+          Create an NFT
+        </button>
+      </div>
+    </mat-menu>
+
+    <bottom-bar-mobile-tab *ngIf="globalVars.loggedInUser" [link]="'/' + globalVars.RouteNames.NOTIFICATIONS">
+      <div class="icon-cover">
+        <img class="noti-img" src="assets/icons/notification-icon.svg" alt="" />
+      </div>
+      <h6>Notifications</h6>
+    </bottom-bar-mobile-tab>
+
+    <div class="bottom-bar-nav">
+      <div class="icon-cover" (click)="globalVars.isLeftBarMobileOpen = true">
+        <img src="assets/icons/hamburger-icon.svg" class="clout" alt="" />
+      </div>
+      <h6>Menu</h6>
+    </div>
+  </div>
+</div>

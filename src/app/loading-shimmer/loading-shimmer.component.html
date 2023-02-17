@@ -1,0 +1,26 @@
+
+<ng-container *ngIf="tabType == 'MARKETPLACE'">
+    <ngx-shimmer-loading [width]="'100%'" [height]="'250px'" [borderRadius]="'30px'"></ngx-shimmer-loading>
+    <ngx-shimmer-loading [width]="'100%'" [height]="'20px'"></ngx-shimmer-loading>
+    <div class="d-flex-center">
+      <ngx-shimmer-loading [shape]="'circle'" [height]="'50px'" [width]="'50px'"></ngx-shimmer-loading>
+      <div class="flex-1">
+        <ngx-shimmer-loading [width]="'70%'"></ngx-shimmer-loading>
+        <ngx-shimmer-loading [width]="'100%'" [height]="'14px'"></ngx-shimmer-loading>
+      </div>
+    </div>
+    <ngx-shimmer-loading [width]="'100%'" [height]="'30px'"></ngx-shimmer-loading>
+</ng-container>
+
+<ng-container *ngIf="tabType == 'FEED'">
+    <div class="d-flex-center">
+        <ngx-shimmer-loading [shape]="'circle'" [height]="'50px'" [width]="'50px'"></ngx-shimmer-loading>
+        <div class="flex-1">
+          <ngx-shimmer-loading [width]="'65%'" [height]="'30px'"></ngx-shimmer-loading>
+          
+        </div>
+      </div>
+      <ngx-shimmer-loading [width]="'100%'" [height]="'360px'" [borderRadius]="'30px'"></ngx-shimmer-loading>
+      
+      <ngx-shimmer-loading [width]="'100%'" [height]="'30px'"></ngx-shimmer-loading>
+</ng-container>

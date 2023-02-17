@@ -1,0 +1,20 @@
+.creator-profile-details-container {
+    margin-top: 20px;
+    max-width: 953px;
+    @media (max-width: 900px) {
+        margin-top: 65px;
+    }
+}
+.firebase-cover-image {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    max-width: 100%;
+    max-height: 250px;
+    @media (max-width: 900px) {
+        border-radius: 0;
+    }
+}
+.profile-content-container {
+    width: 97.5%;
+    margin-left: 2.5%;
+}

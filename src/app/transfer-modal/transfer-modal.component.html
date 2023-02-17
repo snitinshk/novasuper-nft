@@ -1,0 +1,116 @@
+<div
+  app-theme
+  class="nft-modal-container p-15px align-items-center flex-center"
+  [ngClass]="acceptModal ? 'overwrite-min-height2' : 'overwrite-min-height'"
+>
+  <div *ngIf="step === 1" class="w-100 flex-center flex-column">
+    <nft-modal-header *ngIf="transferModal" [header]="'Transfer your NFT'" [bsModalRef]="bsModalRef"></nft-modal-header>
+    <nft-modal-header *ngIf="acceptModal" [header]="'Accept transfer'" [bsModalRef]="bsModalRef"></nft-modal-header>
+    <nft-modal-header *ngIf="burnModal" [header]="'Burn NFT'" [bsModalRef]="bsModalRef"></nft-modal-header>
+
+    <div class="font-weight-bold w-90 d-flex align-items-center fs-15px pt-15px select-p-container flex-column">
+      <label *ngIf="transferModal" class="text-start w-100 transfer-label mb--12px ml-15px">Select the recipient</label>
+      <label *ngIf="burnModal" class="pb-15px burn-text text-center w-100">
+        Burning destroys the NFT forever, which means you or anyone else cannot access it once it’s done.
+      </label>
+      <!-- Search Bar -->
+      <div class="search-bar-cover w-100" *ngIf="transferModal">
+        <search-bar
+          [showCloutavista]="false"
+          [startingSearchText]="startingSearchText"
+          [isSearchForUsersToSendDESO]="true"
+          (creatorToMessage)="_handleCreatorSelectedInSearch($event)"
+        ></search-bar>
+      </div>
+      <label *ngIf="showDangerText || showDangerTextSendingToSelf" class="text-danger">
+        {{ showDangerText ? "You must choose a user to send the NFT to" : "You cant send to yourself" }}
+      </label>
+      <div class="pb-15px w-100 align-items-start" *ngIf="transferToCreator">
+        <simple-profile-card
+          [profile]="transferToCreator"
+          [singleColumn]="true"
+          [hideFollowLink]="true"
+          *ngIf="transferToCreator"
+        ></simple-profile-card>
+      </div>
+      <div [ngClass]="burnModal ? 'w-90' : 'w-100'">
+        <label *ngIf="transferModal" class="transfer-label text-start w-100 ml-10px">
+          Select the edition you want to transfer
+        </label>
+        <label *ngIf="burnModal" class="transfer-label text-start w-100 ml-10px">
+          Pick the edition you wish to burn
+        </label>
+        <label *ngIf="acceptModal" class="transfer-label text-start w-100 ml-10px">
+          Select the edition you wish to accept
+        </label>
+        <select
+          #selectElem
+          (change)="setSer(selectElem.value)"
+          class="select-transfer-modal mb-10px pl-10px pr-10px w-100"
+        >
+          <option *ngFor="let ser of serialNumbers" [value]="ser.SerialNumber">
+            Serialnumber #{{ ser.SerialNumber }}
+          </option>
+        </select>
+      </div>
+      <div *ngIf="showInput" class="w-100 mt-10px">
+        <p class="transfer-label text-start w-100">Add unlockable content ( required )</p>
+        <textarea type="text" class="w-100 mt-5px textarea-transfer" [(ngModel)]="unlockableText"></textarea>
+      </div>
+    </div>
+    <div class="flex-center w-90 fs-15px pt-15px mt-15px">
+      <button (click)="runCheck()" *ngIf="transferModal" class="transfer-modal-button transfer-button w-100">
+        Transfer NFT
+      </button>
+      <button (click)="acceptNFTTransfer()" *ngIf="acceptModal" class="transfer-modal-button accept-button w-100">
+        Accept Transfer
+      </button>
+      <button (click)="stepTwo()" *ngIf="burnModal" class="transfer-modal-button burn-button w-100">Burn</button>
+    </div>
+  </div>
+  <!-- STEP 2 -->
+  <div *ngIf="step === 2" class="w-100 flex-center flex-column">
+    <img src="/assets/img/help_circle_outline.png" class="mt-15px" />
+    <h2 *ngIf="transferModal" class="text-center p-10px font-weight-bold">
+      Are you sure you want to transfer this NFT?
+    </h2>
+    <h2 *ngIf="burnModal" class="text-center p-10px font-weight-bold">Are you sure you want to burn this NFT?</h2>
+    <label *ngIf="transferModal" class="text-center p-10px mt-20px mb-20px">
+      Once the transfer is complete, the new owner will control this NFT.
+    </label>
+    <label *ngIf="burnModal" class="text-center p-10px mt-20px mb-20px">
+      Once the burn is completed the NFT is lost forever
+    </label>
+    <button (click)="runCheck()" *ngIf="transferModal" class="transfer-modal-button transfer-button w-100 mb-15px">
+      Confirm transfer
+    </button>
+    <button
+      (click)="burnNFT()"
+      *ngIf="burnModal"
+      class="transfer-modal-button w-100 mb-15px"
+      [ngClass]="step === 2 ? 'burn-button2' : 'burn-button'"
+    >
+      🔥 Confirm burning🔥
+    </button>
+  </div>
+  <!-- STEP 3 -->
+  <div *ngIf="step === 3" class="w-100 h-100 accept-container">
+    <img src="/assets/img/success.png" class="mt-15px success-img" />
+    <h2 *ngIf="transferModal" class="text-center p-10px pt-15px font-weight-bold">Success!</h2>
+    <h2 *ngIf="acceptModal" class="text-center p-10px pt-15px font-weight-bold">NFT received!</h2>
+    <h2 *ngIf="burnModal" class="text-center p-10px pt-15px font-weight-bold">NFT has been burned!</h2>
+    <label *ngIf="transferModal" class="text-center p-10px mt-20px mb-20px">
+      Your NFT is now transferred! The new owner can accept the transfer by navigating to “Transfers” menu on their
+      profile.
+    </label>
+    <label *ngIf="acceptModal" class="text-center p-10px mt-20px mb-20px">
+      The NFT has now been added to your profile and can be found in the gallery.
+    </label>
+    <label *ngIf="burnModal" class="text-center p-10px mt-20px mb-20px">
+      Your NFT is now gone forever. Good bye 👋
+    </label>
+    <button (click)="hideAndRefresh()" class="transfer-modal-button close-window-button w-100 mb-15px">
+      Close this window
+    </button>
+  </div>
+</div>

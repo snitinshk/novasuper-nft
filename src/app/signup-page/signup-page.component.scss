@@ -1,0 +1,105 @@
+.signup-container {
+    background-color: #F5F5F5;
+    height: 100vh;
+}
+.signup-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+.signup-body-container {
+    height: calc(100vh - 80px);
+}
+.singup-center {
+    max-width: 100%;
+    max-height: 100%;
+    height: 613px;
+    width: 751px;
+    background: #ffffff;
+    border: 9px solid #eeeeee;
+    border-radius: 20px;
+    box-shadow: 1.0368170738220215px 1.0368170738220215px 10.368169784545898px rgba(155, 155, 155, 0.02);
+    overflow-y: scroll;
+}
+.singup-card-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    @media (max-width: 500px) {
+        flex-direction: column;
+    }
+}
+.h-120px {
+    min-height: 120px;
+}
+.signup-center-height {
+    max-height: 100%;
+    height: 613px;
+    overflow-y: scroll;
+    @media (max-width: 500px) {
+        //height: 100%;
+        justify-content: flex-start;
+    }
+}
+.max-width-445px {
+    width: 445px;
+    max-width: 90%;
+}
+.header-font-rezising {
+    font-size: 32px;
+}
+.subheading-font-resizing {
+    font-size: 22px;
+}
+.button-font-resizing {
+    font-size: 28px;
+}
+.logo-height-main-button {
+    height: 50px;
+}
+.signup-main-button {
+    width: 445px;
+    max-width: 90%;
+    height: 89px;
+    background: #0e0f22;
+    color: white;
+    border-radius: 20px;
+}
+@media (max-width: 450px) {
+    .button-font-resizing {
+        font-size: 18px;
+    }
+    .subheading-font-resizing {
+        font-size: 16px;
+    }
+    .header-font-rezising {
+        font-size: 24px;
+    }
+    .logo-height-main-button {
+        height: 30px;
+    }
+    .signup-main-button {
+        height: 60px;
+    }
+}
+.fc-success {
+    color: green;
+}
+.fc-error {
+    color: red;
+}
+.signup-input {
+    height: 35px;
+    border-radius: 5.669146537780762px;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05);
+}
+.profile-type-card {
+    width: 190px;
+    height: 220px;
+    overflow: hidden;   
+    background: #ffffff;
+    border: 2px solid #efefef;
+    border-radius: 15.090079307556152px;
+    box-shadow: 1.0368170738220215px 1.0368170738220215px 20.736339569091797px rgba(0, 0, 0, 0.05);
+}

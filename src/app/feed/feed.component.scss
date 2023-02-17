@@ -1,0 +1,61 @@
+:host ::ng-deep {
+    .feed_tabs {
+        .tabs_column_list {
+            width: 33.33% !important;
+            align-items: flex-start !important;
+            .tabs_column_list_inner {
+                font-size: 16px !important;
+                font-weight: 600;
+                @media screen and (max-width: 767px) {
+                    font-size: 12px !important;
+                }
+            }
+        }
+    }
+}
+.node-update {
+    background-color: var(--text);
+    min-height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    color: var(--background);
+    padding: 10px;
+}
+@media (max-width: 1000px) {
+    .node-update {
+        margin-top: 20px;
+    }
+}
+
+.card {
+    width: 96.5%;
+    padding: 1rem;
+    // margin: 1.5% auto;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(195, 209, 216, 0.5);
+    
+    @media (min-width: 768px) {
+      margin: 1.5%;
+      flex-basis: 0;
+      flex-grow: 1;
+      max-width: 100%;
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
+    }
+
+  }
+  
+.d-flex-center {
+    display: flex;
+    align-items: center;
+
+    .flex-1 {
+        flex: 1;
+        margin-inline-start: 1rem;
+    }
+}

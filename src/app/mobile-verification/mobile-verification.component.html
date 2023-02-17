@@ -1,0 +1,95 @@
+<div class="h-100px">
+  <form #f="ngForm" [formGroup]="phoneForm" class="form-group mt-5px">
+    <div class="mobile-verification-input-button">
+      <ngx-intl-tel-input
+        style="font-size: 15px !important"
+        [cssClass]="'form-control mobile-input sign-up__phone-input'"
+        [separateDialCode]="true"
+        [enableAutoCountrySelect]="true"
+        [enablePlaceholder]="true"
+        [searchCountryFlag]="true"
+        [selectFirstCountry]="false"
+        [selectedCountryISO]="CountryISO.UnitedStates"
+        [maxLength]="15"
+        [phoneValidation]="true"
+        (ngModelChange)="onPhoneNumberInputChanged()"
+        name="phone"
+        formControlName="phone"
+      ></ngx-intl-tel-input>
+      <button
+        (click)="sendVerificationText()"
+        [ngClass]="{ disabled: !phoneForm.valid }"
+        class="white-rounded-button small-button-size ml-10px fs-12px"
+      >
+        <label *ngIf="!sendingPhoneNumberVerificationText; else elseBlock" class="mb-0px pointer-events-none">Get verification code</label>
+        <ng-template #elseBlock><i class="fa fa-spinner fa-spin"></i></ng-template>
+      </button>
+    </div>
+    <div class="fc-red fs-15px">
+      <!-- TODO: kinda obnoxious how this displays an error as soon as I start typing-->
+      <div *ngIf="f.form.value.phone && f.form.controls.phone.invalid" class="mt-10px">
+        Please enter a valid phone number
+      </div>
+
+      <div *ngIf="sendPhoneNumberVerificationTextServerErrors.phoneNumberAlreadyInUse" class="mt-10px">
+        This phone number is being used by another account. Please use a different phone number or sign into your other
+        account.
+      </div>
+
+      <div *ngIf="sendPhoneNumberVerificationTextServerErrors.maxSendAttemptsReached" class="mt-10px">
+        You've requested too many verification codes. Please wait 10 minutes and try again.
+      </div>
+
+      <div *ngIf="sendPhoneNumberVerificationTextServerErrors.voipNumberNotAllowed" class="mt-10px">
+        This phone number is a VOIP number, which isn't allowed (to prevent spam). Please try again with a different
+        phone number.
+      </div>
+
+      <div *ngIf="sendPhoneNumberVerificationTextServerErrors.chineseNumberNotAllowed" class="mt-10px">
+        Currently we can't send text messages to China. If you have a non-Chinese number, please try that. If not, click
+        "skip" below. You can still use the site by buying DESO.
+      </div>
+    </div>
+  </form>
+  <form #f="ngForm" [formGroup]="verificationCodeForm" class="form-group mt-5px">
+    <div class="mobile-verification-input-button">
+      <input
+        class="form-control mobile-input w-259px"
+        name="verificationCode"
+        formControlName="verificationCode"
+        placeholder="Verification code"
+        (ngModelChange)="onVerificationCodeInputChanged()"
+      />
+      <div class="d-flex flex-column flex-center">
+        <button
+          (click)="submitVerificationCode()"
+          [ngClass]="{ disabled: !verificationCodeForm.valid }"
+          class="black-rounded-button small-button-size ml-10px fs-12px"
+        >
+          <label *ngIf="!submittingPhoneNumberVerificationCode; else elseBlock" class="mb-0px pointer-events-none">Verify your phone</label>
+          <ng-template #elseBlock><i class="fa fa-spinner fa-spin"></i></ng-template>
+        </button>
+        <div *ngIf="false" class="mt-5px">
+          <a href="" style="color: #7C7C7C" class="fs-12px" (click)="resendVerificationCode($event)">Resend</a>
+          <i *ngIf="resentVerificationCode" class="far fa-check-circle fc-blue"></i>
+        </div>
+      </div>
+    </div>
+    <div class="fc-red fs-15px">
+      <div *ngIf="submitPhoneNumberVerificationCodeServerErrors.invalidCode" class="mt-10px">
+        The code you entered is invalid. Please try again.
+      </div>
+      <div *ngIf="submitPhoneNumberVerificationCodeServerErrors.maxCheckAttemptsReached" class="mt-10px">
+        You've checked too many codes and hit a rate limit. Please wait 10 minutes and try again.
+      </div>
+    </div>
+  </form>
+  <div *ngIf="false" class="fs-10px">
+    By proceeding, you agree to receive text messages from bitclout.com (standard rates apply)
+  </div>
+  <div class="fs-18px">
+    <div *ngIf="sendPhoneNumberVerificationTextServerErrors.maxSendAttemptsReached" class="mt-5px fc-red fs-15px">
+      You've requested too many verification codes. Please wait 10 minutes and try again.
+    </div>
+  </div>
+</div>

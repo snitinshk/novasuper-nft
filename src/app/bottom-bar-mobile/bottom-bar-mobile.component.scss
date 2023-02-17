@@ -1,0 +1,42 @@
+.bottom-bar-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 4px ​10p;
+    bottom-bar-mobile-tab {
+        text-align: center;
+        .icon-cover {
+            width: 30px;
+            text-align: center;
+            margin: auto;
+            margin-bottom: 4px;
+            img {
+                width: 24px;
+                margin: auto;
+                max-width: 100%;
+                &.noti-img {
+                    width: 20px;
+                }
+            }
+        }
+        h6 {
+            font-size: 9px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    }
+}
+.btn-create {
+    color: var(--background);
+    background-image: url("../../assets/img/btnbg.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 30px;
+    border: 3px solid var(--background);
+    box-shadow: 0px 4px 5px 3px rgba(0, 0, 0, 0.1);
+    height: 60px;
+    width: 60px;
+    padding: 5px;
+    font-size: 12px;
+}

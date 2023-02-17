@@ -1,0 +1,45 @@
+<div class="fs-15px mt-15px">
+  To finalize creating your profile, you need $DESO cryptocurrency.
+  <br />
+  <br />
+  <span *ngIf="globalVars.createProfileFeeNanos > 0">
+    Creating a profile currently costs
+    <b>{{ globalVars.createProfileFeeInDeSo() }} DeSo (≈ {{ globalVars.createProfileFeeInUsd() }} USD)</b>
+  </span>
+  <br />
+  <br />
+  <span>Get $DESO by using any of the methods below 👇</span>
+</div>
+<div class="card-box-profile-update">
+  <!--<a class="card-profile-update" [routerLink]="'/' + RouteNames.GET_STARTER_BITCLOUT">
+    <div class="background-profile background-mobile">
+      <img [src]="'assets/icons/mobile.svg'" class="profile-icon" />
+    </div>
+    <h3 class="card-profile-header">Verify your phone number</h3>
+    <p class="card-profile-desc">Get around ~$0.1 worth of $DESO for free by verifying it through Twilio.</p>
+  </a>
+  -->
+  <a class="card-profile-update" (click)="globalVars.launchGetFreeDESOFlow()">
+    <div class="background-profile background-jumio">
+      <img [src]="'assets/icons/jumio.svg'" class="profile-icon" />
+    </div>
+    <h3 class="card-profile-header">Verify your identity</h3>
+    <p class="card-profile-desc">
+      Get {{ globalVars.getFreeDESOMessage() }} for free by completing Jumio’s KYC process.
+    </p>
+  </a>
+  <a class="card-profile-update" href="https://buy.deso.org/" target="_blank">
+    <div class="background-profile background-deso">
+      <img [src]="'assets/icons/deso.svg'" class="profile-icon" />
+    </div>
+    <h3 class="card-profile-header">Buy Deso on bitclout.com</h3>
+    <p class="card-profile-desc">Buy $DESO with a credit card, Bitcoin or Ethereum.</p>
+  </a>
+  <a class="card-profile-update" href="https://www.blockchain.com/" target="_blank">
+    <div class="background-profile background-blockchain">
+      <img [src]="'assets/icons/block.svg'" class="profile-icon" />
+    </div>
+    <h3 class="card-profile-header">Buy $DESO on blockchain.com</h3>
+    <p class="card-profile-desc">Buy $DESO on blockchain.com’s exchange.</p>
+  </a>
+</div>

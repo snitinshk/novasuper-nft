@@ -1,0 +1,47 @@
+<!-- Posts -->
+<simple-center-loader [height]="200" *ngIf="isLoading"></simple-center-loader>
+<div class="fs-15px text-grey5 font-weight-bold d-flex flex-column pt-15px" *ngIf="!isLoading"></div>
+<div *ngIf="!showProfileAsReserved && !this.posts?.length && !isLoading" class="pt-15px">
+  <div class="background-color-grey p-35px br-12px d-flex flex-row align-items-center" style="text-align: center">
+    <span *ngIf="profileBelongsToLoggedInUser(); else elseMissingPostBlock">No NFTs created yet.</span>
+    <ng-template #elseMissingPostBlock>
+      <span>@{{ profile.Username }} has not created any NFTs yet.</span>
+    </ng-template>
+  </div>
+</div>
+<div *ngIf="!showProfileAsReserved">
+  <div class="p-15px pb-0">
+    <div *ngIf="this.posts?.length">NFTs created by @{{ profile.Username }}</div>
+  </div>
+  <div *ngIf="!globalVars.hasUserBlockedCreator(profile.PublicKeyBase58Check) && this.posts?.length > 0">
+    <div
+      class="search-results"
+      infiniteScroll
+      [infiniteScrollDistance]="5"
+      [infiniteScrollThrottle]="150"
+      (scrolled)="onScroll()"
+    >
+      <div class="nfts-card-list nft_creator_list">
+        <div class="nft-col-wrap" *ngFor="let post of dataToShow">
+          <div class="max-width-350">
+            <new-nft-card
+              [contentShouldLinkToThread]="true"
+              [loadProfile]="true"
+              [includePaddingOnPost]="true"
+              [post]="post"
+              [afterCommentCreatedCallback]="_prependComment.bind(this, post, index)"
+              [blocked]="globalVars.hasUserBlockedCreator(profile.PublicKeyBase58Check)"
+              [showNFTDetails]="true"
+              [showExpandedNFTDetails]="false"
+              [setBorder]="true"
+              [showAvailableSerialNumbers]="true"
+              [cardStyle]="true"
+              [profilePublicKeyBase58Check]="profile.PublicKeyBase58Check"
+              (userBlocked)="userBlocked()"
+            ></new-nft-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

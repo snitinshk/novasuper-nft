@@ -1,0 +1,11 @@
+<!--
+  Almost all pages should use this component to support both mobile and desktop views
+  -->
+
+<app-header></app-header>
+
+<div [class]="mobile ? 'global__mobile' : 'global__desktop'">
+  <div class="m_inner_wrapper">
+    <ng-content></ng-content>
+  </div>
+</div>

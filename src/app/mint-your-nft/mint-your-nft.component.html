@@ -1,0 +1,79 @@
+<div class="page-mint-nft">
+  <div class="popup-header">
+    <h1>Mint your NFT</h1>
+  </div>
+  <mat-dialog-content class="mat-typography">
+    <div class="popup-body">
+      <h6 class="font-weight-bold">Edition of 1</h6>
+      <h6>You are only able to mint unique items on supernovas.</h6>
+      <br />
+
+      <h6 class="font-weight-bold">Minimum price</h6>
+      <h6>Set the lowest price you'd be willing to sell.</h6>
+
+      <div class="input-with-button">
+        <input
+          [(ngModel)]="minBidAmountUSD"
+          (ngModelChange)="updateMinBidAmountDESO($event)"
+          matInput
+          placeholder="Enter here..."
+        />
+        <button class="btn btn-black">USD</button>
+      </div>
+
+      <div class="input-with-button">
+        <input
+          [(ngModel)]="minBidAmountDESO"
+          (ngModelChange)="updateMinBidAmountUSD($event)"
+          matInput
+          placeholder="Enter here..."
+        />
+        <button class="btn btn-black">DESO</button>
+      </div>
+
+      <h6 class="font-weight-bold">Creator Royalty</h6>
+      <h6>Royalty you will recieve every time the NFT is sold.</h6>
+
+      <div class="input-with-button">
+        <input [(ngModel)]="creatorRoyaltyPercent" matInput placeholder="Enter here..." />
+        <button class="btn btn-black">%</button>
+      </div>
+
+      <h6 class="font-weight-bold">Coin Holder Royalty</h6>
+      <h6>Royalty allocated to your Creator Coin.</h6>
+
+      <div class="input-with-button">
+        <input [(ngModel)]="coinRoyaltyPercent" matInput placeholder="Enter here..." />
+        <button class="btn btn-black">%</button>
+      </div>
+
+      <h6 class="font-weight-bold">Unlockable content</h6>
+      <h6>
+        Include exclusive text, like a URL, encrypted for NFT purchases. You are able to upload the content when you
+        sell the NFT.
+      </h6>
+      <mat-slide-toggle [(ngModel)]="includeUnlockable"></mat-slide-toggle>
+
+      <br />
+      <br />
+
+      <h6 class="font-weight-bold">Put it for sale</h6>
+      <h6>If you don't put the NFT for sale, no one is able to place bids on it.</h6>
+      <mat-slide-toggle [(ngModel)]="putOnSale"></mat-slide-toggle>
+
+      <br />
+      <br />
+    </div>
+  </mat-dialog-content>
+
+  <div class="popup-footer">
+    <button
+      class="btn btn-post"
+      [disabled]="hasUnreasonableRoyalties() || hasUnreasonableNumCopies() || hasUnreasonableMinBidAmount() || minting"
+      (click)="mintNft()"
+    >
+      Mint your NF
+    </button>
+    <!-- <button class="btn btn-post" [disabled]="hasUnreasonableRoyalties() || hasUnreasonableMinBidAmount() || minting" (click)="mintNft()">Mint your NFT</button> -->
+  </div>
+</div>

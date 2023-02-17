@@ -1,0 +1,13 @@
+<div app-theme class="nft-modal-container overwrite-min-height-450 p-15px">
+  <nft-modal-header [header]="'Your NFT is sold!'" [bsModalRef]="bsModalRef"></nft-modal-header>
+
+  <div class="pb-15px fs-15px text-align-center mt-20px">
+    Congratulations for selling your NFT! You have succeeded in illuminating someones world with the beauty you have
+    created. 🌈
+  </div>
+  <br />
+  <p class="text-align-center font-weight-bold mt-10px">
+    Share your success with others by quote reposting the NFT you just sold!
+  </p>
+  <button class="btn cta-button-gradient" (click)="quoteRepost($event, true)">Quote Repost the NFT</button>
+</div>

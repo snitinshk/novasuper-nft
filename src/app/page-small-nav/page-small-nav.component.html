@@ -1,0 +1,23 @@
+<app-header></app-header>
+<div [class]="mobile ? 'global__mobile' : 'global__desktop'" class="position-relative">
+  <div class="m_inner_wrapper flex-column end" [ngClass]="mobile ? 'marketplace-mobile-margin' : ''">
+    <app-small-left-bar *ngIf="!mobile"></app-small-left-bar>
+    <div class="mobile_mrk_head" *ngIf="marketplace" [ngClass]="mobile ? 'mt-65px' : ''">Marketplace</div>
+    <left-bar-mobile *ngIf="mobile"></left-bar-mobile>
+    <div class="w-100 d-flex flex-row">
+      <app-marketplace-left-bar *ngIf="!mobile && marketplace"></app-marketplace-left-bar>
+      <div
+        [ngClass]="{
+          global__center__width: marketplace && !mobile,
+          global__content__width: !marketplace || mobile
+        }"
+      >
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+</div>
+<app-marketplace-left-bar-mobile></app-marketplace-left-bar-mobile>
+<button *ngIf="mobile && marketplace" class="mobile-filter-button" (click)="openMarketplaceMobileFiltering()">
+  Filter
+</button>

@@ -1,0 +1,194 @@
+<app-page>
+  <div class="w-100 mw-activity">
+    <div *ngIf="mobile" class="global__top-bar__height"></div>
+    <tab-selector
+      [tabs]="['Bids Made', 'Bids Received', 'Transfers']"
+      [activeTab]="activeTab"
+      (tabClick)="_handleTabClick($event)"
+    ></tab-selector>
+    <simple-center-loader [height]="200" *ngIf="isLoading"></simple-center-loader>
+    <div [ngClass]="mobile ? 'p-10px' : ''" class="pt-0px max-width-100">
+      <div *ngIf="!nftResponse?.length && activeTab === 'Transfers' && !isLoading" class="pt-15px">
+        <div class="background-color-grey p-35px br-12px d-flex flex-row align-items-center" style="text-align: center">
+          <span>There is no pending transfers</span>
+        </div>
+      </div>
+      <div *ngIf="!myBids?.length && activeTab === 'Bids Made' && !isLoading" class="pt-15px">
+        <div class="background-color-grey p-35px br-12px d-flex flex-row align-items-center" style="text-align: center">
+          <span>No bids yet.</span>
+        </div>
+      </div>
+      <div *ngIf="!checkNFTbidsReceived() && activeTab === 'Bids Received' && !isLoading" class="pt-15px">
+        <div class="background-color-grey p-35px br-12px d-flex flex-row align-items-center" style="text-align: center">
+          <span>No NFTs for sale with bids on them...</span>
+        </div>
+      </div>
+      <div class="row" *ngIf="activeTab === 'Bids Made'">
+        <div class="col-12" *ngFor="let nftEntry of myBids">
+          <div class="w-100 mt-20px activity-box">
+            <!-- IMAGE -->
+            <div class="activity-frame-container">
+              <div
+                *ngIf="
+                  nftEntry.PostEntryResponse.ImageURLs &&
+                  nftEntry.PostEntryResponse.ImageURLs[0] &&
+                  !nftEntry.PostEntryResponse.ParentStakeID
+                "
+                class="image-size-active-bids"
+              >
+                <img
+                  (click)="openImgModal($event, nftEntry.PostEntryResponse.ImageURLs[0])"
+                  data-toggle="modal"
+                  class="h-100"
+                  src="{{ mapImageURLs(nftEntry.PostEntryResponse.ImageURLs[0]) }}"
+                />
+              </div>
+              <!-- VIDEO -->
+              <div
+                *ngIf="
+                  nftEntry.PostEntryResponse.VideoURLs && nftEntry.PostEntryResponse.VideoURLs[0] && !post.ParentStakeID
+                "
+                class="image-size-active-bids"
+                [ngClass]="{ 'mb-10px': quotedContent && showQuotedContent }"
+              >
+                <iframe
+                  [src]="nftEntry.PostEntryResponse.VideoURLs[0] | sanitizeVideoUrl"
+                  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                  allowfullscreen
+                  class="feed-post__video"
+                ></iframe>
+              </div>
+            </div>
+            <div class="active-bids-bid-info">
+              <label
+                class="fs-12px font-weight-bold mb-0px"
+                *ngIf="nftEntry.HighestBidAmountNanos == nftEntry.BidAmountNanos"
+              >
+                YOUR BID
+              </label>
+              <label
+                class="fs-12px font-weight-bold mb-0px"
+                *ngIf="nftEntry.HighestBidAmountNanos > nftEntry.BidAmountNanos"
+              >
+                HIGHEST BID
+              </label>
+              <div class="fs-26px font-weight-bold mt-5px">
+                <span *ngIf="nftEntry.HighestBidAmountNanos == nftEntry.BidAmountNanos">
+                  {{ globalVars.nanosToUSD(nftEntry.BidAmountNanos, 2) }}
+                </span>
+                <span *ngIf="nftEntry.HighestBidAmountNanos > nftEntry.BidAmountNanos">
+                  {{ globalVars.nanosToUSD(nftEntry.HighestBidAmountNanos, 2) }}
+                </span>
+              </div>
+              <div class="fs-14px">
+                <span *ngIf="nftEntry.HighestBidAmountNanos == nftEntry.BidAmountNanos">
+                  {{ globalVars.nanosToDeSo(nftEntry.BidAmountNanos, 5) }} $DESO
+                </span>
+                <span *ngIf="nftEntry.HighestBidAmountNanos > nftEntry.BidAmountNanos">
+                  {{ globalVars.nanosToDeSo(nftEntry.HighestBidAmountNanos, 5) }} $DESO
+                </span>
+              </div>
+              <div class="fs-12px">Serial #{{ nftEntry.SerialNumber }}</div>
+            </div>
+            <div class="active-bids-bid-status">
+              <div class="status-outbid" *ngIf="nftEntry.HighestBidAmountNanos > nftEntry.BidAmountNanos">
+                <img src="/assets/img/small-warning.png" class="pr-5px mt-5px" />
+                Outbid
+              </div>
+              <div *ngIf="nftEntry.HighestBidAmountNanos > nftEntry.BidAmountNanos" class="status-outbid-text">
+                Make a higher bid to stay in the race!
+              </div>
+              <div
+                class="status-lead"
+                *ngIf="
+                  nftEntry.HighestBidAmountNanos === nftEntry.BidAmountNanos &&
+                  nftEntry.BidderBalanceNanos >= nftEntry.BidAmountNanos
+                "
+              >
+                <img src="/assets/img/small-success.png" class="pr-5px" />
+                You are in the lead!
+              </div>
+              <div
+                class="status-lead-text"
+                *ngIf="
+                  nftEntry.HighestBidAmountNanos === nftEntry.BidAmountNanos &&
+                  nftEntry.BidderBalanceNanos >= nftEntry.BidAmountNanos
+                "
+              >
+                Your bid is the highest one for this serial number.
+              </div>
+            </div>
+            <div class="active-bids-buttons">
+              <button
+                class="active-bids-button-pab hover-scale"
+                *ngIf="nftEntry.HighestBidAmountNanos > nftEntry.BidAmountNanos"
+                (click)="openPlaceBidModal($event, nftEntry.PostEntryResponse)"
+              >
+                Place a Bid
+              </button>
+              <a
+                [routerLink]="['/' + globalVars.RouteNames.POSTS, nftEntry.PostEntryResponse.PostHashHex]"
+                queryParamsHandling="merge"
+                class="active-bids-button-vnft hover-scale"
+                [ngClass]="nftEntry.HighestBidAmountNanos > nftEntry.BidAmountNanos ? 'mt-10px' : ''"
+              >
+                View NFT
+              </a>
+              <button class="active-bids-button-cb mt-10px hover-scale" (click)="cancelBid(nftEntry)">
+                <img src="/assets/img/close-circle.png" />
+                Cancel your Bid
+              </button>
+            </div>
+          </div>
+          <div class="fs-12px pt-0px">
+            <div
+              class="fs-12px fc-red"
+              *ngIf="nftEntry.BidderBalanceNanos < nftEntry.BidAmountNanos"
+              [ngClass]="{ 'pt-5px': nftEntry.HighestBidAmountNanos > nftEntry.BidAmountNanos }"
+            >
+              You do not have enough DESO for this bid. Place a lower bid or
+              <a
+                class="link--unstyled"
+                style="text-decoration: underline"
+                [routerLink]="'/' + globalVars.RouteNames.BUY_DESO"
+              >
+                buy DESO
+              </a>
+              .
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nfts-card-list nft_creator_list" *ngIf="activeTab === 'Transfers' && !isLoading">
+        <div class="nft-col-wrap" *ngFor="let nftEntry of nftResponse">
+          <div class="max-width-350">
+            <new-nft-card
+              *ngIf="nftEntry.PostEntryResponse.ProfileEntryResponse"
+              [contentShouldLinkToThread]="true"
+              [includePaddingOnPost]="true"
+              [pending]="true"
+              [owns]="true"
+              [post]="nftEntry.PostEntryResponse"
+              [afterCommentCreatedCallback]="_prependComment.bind(this, nftEntry.PostEntryResponse, index)"
+              [blocked]="globalVars.hasUserBlockedCreator(this.globalVars.loggedInUser?.PublicKeyBase58Check)"
+              [showNFTDetails]="true"
+              [showExpandedNFTDetails]="false"
+              [setBorder]="true"
+              [showAvailableSerialNumbers]="true"
+              [cardStyle]="true"
+              [profilePublicKeyBase58Check]="this.globalVars.loggedInUser?.PublicKeyBase58Check"
+              [isForSaleOnly]="false"
+              (userBlocked)="userBlocked()"
+            ></new-nft-card>
+          </div>
+        </div>
+      </div>
+      <div class="nfts-card-list nft_creator_list" *ngIf="activeTab === 'Bids Received' && !isLoading">
+        <div class="w-100" *ngFor="let nftEntry of receivedNFTResponse">
+          <app-bids-accordion *ngIf="nftEntry.BidEntryResponses" [nftEntry]="nftEntry"></app-bids-accordion>
+        </div>
+      </div>
+    </div>
+    <div class="global__bottom-bar-mobile-height"></div>
+  </div>
+</app-page>
